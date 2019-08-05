@@ -1,6 +1,6 @@
 {
 	"name": "@egjs/list-differ",
-	"version": "1.0.0",
+	"version": "1.0.0-snapshot",
 	"description": "A module that checks the diff when values are added, removed, or changed in an array.",
 	"main": "./dist/list-differ.js",
 	"module": "./dist/list-differ.esm.js",
