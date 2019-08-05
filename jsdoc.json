@@ -44,6 +44,7 @@
     },
     "linenums": true,
     "link": {
+      "home": "https://naver.github.io/egjs-list-differ",
       "canonical": "https://naver.github.io/egjs-list-differ/release/latest/doc/"
     }
   },
