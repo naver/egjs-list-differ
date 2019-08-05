@@ -20,8 +20,8 @@ $ npm i @egjs/list-differ
 
 ## 📖 Documentation
 * See [**Documentation**](https://naver.github.io/egjs-list-differ/release/latest/doc/index.html) page.
-* [Introducing ListDiffer to track changes in data and track changes](https://medium.com/p/27793f0c6f4a)([한국어](https://medium.com/p/9c3f1d770542))
-* [How to Make Cross Framework Component](https://medium.com/p/ee76d76708b1)([한국어](https://medium.com/p/234b3fece353))
+* [Introducing ListDiffer to track changes in data and track changes](https://medium.com/naver-fe-platform/introducing-listdiffer-to-track-changes-in-data-27793f0c6f4a)([한국어](https://medium.com/naver-fe-platform/%EB%8D%B0%EC%9D%B4%ED%84%B0%EC%9D%98-%EB%B3%80%ED%99%94%EB%A5%BC-%EC%95%8C%EC%95%84%EB%82%B4%EA%B3%A0-%EB%B3%80%ED%99%94-%EA%B3%BC%EC%A0%95%EC%9D%84-%EC%B6%94%EC%A0%81-%ED%95%98%EB%8A%94-listdiffer-9c3f1d770542))
+* [How to Make Cross Framework Component](https://medium.com/naver-fe-platform/how-to-make-cross-framework-component-ee76d76708b1)([한국어](https://medium.com/naver-fe-platform/cross-framework-component%EB%A5%BC-%EB%A7%8C%EB%93%9C%EB%8A%94-%EB%B0%A9%EB%B2%95-234b3fece353))
 
 
 ## 📦 Packages
