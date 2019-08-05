@@ -1,66 +1,67 @@
 {
-  "name": "@egjs/list-differ",
-  "version": "0.1.0",
-  "description": "A module that checks the diff when values are added, removed, or changed in an array.",
-  "main": "./dist/list-differ.js",
-  "module": "./dist/list-differ.esm.js",
-  "types": "./declaration/index.d.ts",
-  "es2015": "dist/list-differ.esm.js",
-  "sideEffects": false,
-  "scripts": {
-    "start": "rollup -c -w",
-    "test": "jest --watchAll",
-    "coverage": "jest --coverage && print-coveralls --sort=desc",
-    "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "build": "rm -rf ./dist ./declaration && rollup -c && npm run declaration && npm run printsizes",
-    "declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
-    "printsizes": "print-sizes ./dist --exclude=\\.map",
-    "lint": "tslint -c tslint.json 'src/**/*.ts'",
-    "jsdoc": "rm -rf ./doc && jsdoc -c jsdoc.json",
-    "demo:build": "npm run build && cpx 'dist/**/*' demo/release/latest/dist --clean",
-    "demo:prebuild-version": "cpx 'dist/**/*' demo/release/$npm_package_version/dist --clean && cpx 'doc/**/*' demo/release/$npm_package_version/doc --clean",
-    "demo:prebuild-latest": "cpx 'dist/**/*' demo/release/latest/dist --clean && cpx 'doc/**/*' demo/release/latest/doc --clean",
-    "demo:deploy-init": "npm run build && npm run jsdoc && npm run demo:prebuild-version && npm run demo:prebuild-latest && gh-pages -d demo/ --remote upstream",
-    "demo:deploy": "npm run build && npm run jsdoc && npm run demo:prebuild-version && npm run demo:prebuild-latest && gh-pages -d demo/ --add --remote upstream",
-    "release": "release-helper oss"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/naver/egjs-list-differ"
-  },
-  "author": {
-    "name": "NAVER Corp."
-  },
-  "namespace": {
-    "eg": "eg"
-  },
-  "keywords": [
-    "diff",
-    "arr",
-    "list",
-    "children",
-    "dom",
-    "differ",
-    "data"
-  ],
-  "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {
-    "@daybrush/jsdoc": "^0.3.7",
-    "@egjs/build-helper": "0.0.5",
-    "@egjs/release-helper": "0.0.3",
-    "@types/jest": "^24.0.11",
-    "@types/sinon": "^7.0.11",
-    "coveralls": "^3.0.3",
-    "cpx": "^1.5.0",
-    "egjs-jsdoc-template": "^1.4.4",
-    "jest": "^24.7.1",
-    "print-coveralls": "^1.2.2",
-    "print-sizes": "^0.1.0",
-    "rollup": "^1.8.0",
-    "sinon": "^7.3.1",
-    "ts-jest": "^24.0.1",
-    "tslint": "^5.15.0",
-    "typescript": "^3.0.3"
-  }
+	"name": "@egjs/list-differ",
+	"version": "1.0.0",
+	"description": "A module that checks the diff when values are added, removed, or changed in an array.",
+	"main": "./dist/list-differ.js",
+	"module": "./dist/list-differ.esm.js",
+	"types": "./declaration/index.d.ts",
+	"es2015": "dist/list-differ.esm.js",
+	"sideEffects": false,
+	"scripts": {
+		"start": "rollup -c -w",
+		"test": "jest --watchAll",
+		"coverage": "jest --coverage && print-coveralls --sort=desc",
+		"coveralls": "cat ./coverage/lcov.info | coveralls",
+		"build": "rm -rf ./dist ./declaration && rollup -c && npm run declaration && npm run printsizes",
+		"declaration": "rm -rf declaration && tsc -p tsconfig.declaration.json",
+		"printsizes": "print-sizes ./dist --exclude=\\.map",
+		"lint": "tslint -c tslint.json 'src/**/*.ts'",
+		"jsdoc": "rm -rf ./doc && jsdoc -c jsdoc.json",
+		"demo:build": "npm run build && cpx 'dist/**/*' demo/release/latest/dist --clean",
+		"demo:prebuild-version": "cpx 'dist/**/*' demo/release/$npm_package_version/dist --clean && cpx 'doc/**/*' demo/release/$npm_package_version/doc --clean",
+		"demo:prebuild-latest": "cpx 'dist/**/*' demo/release/latest/dist --clean && cpx 'doc/**/*' demo/release/latest/doc --clean",
+		"demo:deploy-init": "npm run build && npm run jsdoc && npm run demo:prebuild-version && npm run demo:prebuild-latest && gh-pages -d demo/ --remote upstream",
+		"demo:deploy": "npm run build && npm run jsdoc && npm run demo:prebuild-version && npm run demo:prebuild-latest && gh-pages -d demo/ --add --remote upstream",
+		"release": "release-helper upstream"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/naver/egjs-list-differ"
+	},
+	"author": {
+		"name": "NAVER Corp."
+	},
+	"namespace": {
+		"eg": "eg"
+	},
+	"keywords": [
+		"diff",
+		"arr",
+		"list",
+		"children",
+		"dom",
+		"differ",
+		"data"
+	],
+	"license": "MIT",
+	"dependencies": {},
+	"devDependencies": {
+		"@daybrush/jsdoc": "^0.3.7",
+		"@egjs/build-helper": "0.0.5",
+		"@egjs/release-helper": "0.0.3",
+		"@types/jest": "^24.0.11",
+		"@types/sinon": "^7.0.11",
+		"coveralls": "^3.0.3",
+		"cpx": "^1.5.0",
+		"egjs-jsdoc-template": "^1.4.4",
+		"gh-pages": "^2.1.0",
+		"jest": "^24.7.1",
+		"print-coveralls": "^1.2.2",
+		"print-sizes": "^0.1.0",
+		"rollup": "^1.8.0",
+		"sinon": "^7.3.1",
+		"ts-jest": "^24.0.1",
+		"tslint": "^5.15.0",
+		"typescript": "^3.0.3"
+	}
 }
