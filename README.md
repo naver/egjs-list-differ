@@ -75,24 +75,24 @@ console.log(result.maintained);
 ||**changed**|**pureChanged:**|
 |---:|---|---|
 ||[[3, 0], [2, 1], [1, 3], [0, 4], [6, 5]]|[[[3, 0], [2, 1], [1, 3]]||
-|prevList|![prev_list](./images/changed_prev_list.png) |![](./images/changed_before_prev_list.png)|
-|process|<p align="center">-</p>|![](./images/changed_before_animation.gif)|
-|list|![](./images/changed_list.png)|![](./images/changed_before_list.png)|
+|prevList|![prev_list](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/changed_prev_list.png) |![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/changed_before_prev_list.png)|
+|process|<p align="center">-</p>|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/changed_before_animation.gif)|
+|list|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/changed_list.png)|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/changed_before_list.png)|
 
 ### What is ordered?
 An array of index pairs to be `ordered` that can synchronize `list` before adding data. (Formatted by: Array<[prevIndex, nextIndex]>)
 
 ||removed -> ordered -> added|
 |---:|---|
-|prevList|![](./images/prev_list.png)|
-|removed<br/>[5, 4]|![](./images/removed.png)|
+|prevList|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/prev_list.png)|
+|removed<br/>[5, 4]|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/removed.png)|
 |ordered|[[3, 0], [3, 1], [3, 2]]|
-||![](./images/ordered_before_added.gif)|
-|ordered[0]<br/>[3 => 0]| ![](./images/ordered_before_ordered0.png)|
-|ordered[1]<br/>[3 => 1]| ![](./images/ordered_before_ordered1.png)|
-|ordered[2]<br/>[3 => 2]| ![](./images/ordered_before_ordered2.png)|
-|added<br/>[2]|![](./images/ordered_before_added.png)|
-|list|![](./images/list.png)|
+||![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/ordered_before_added.gif)|
+|ordered[0]<br/>[3 => 0]| ![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/ordered_before_ordered0.png)|
+|ordered[1]<br/>[3 => 1]| ![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/ordered_before_ordered1.png)|
+|ordered[2]<br/>[3 => 2]| ![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/ordered_before_ordered2.png)|
+|added<br/>[2]|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/ordered_before_added.png)|
+|list|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/list.png)|
 
 
 
@@ -111,9 +111,9 @@ const result = diff(prevList, list, e => e);
 
 ||removed => ordered => added|
 |---|---|
-|prevList|![](./images/prev_list.png)|
-|process|![](./images/changed_before_animation.gif)|
-|list|![](./images/list.png)|
+|prevList|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/prev_list.png)|
+|process|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/changed_before_animation.gif)|
+|list|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/list.png)|
 
 *  Synchronize List
 ```js
@@ -151,9 +151,9 @@ result.added.forEach(index => {
 ### removed => maintaind => added
 ||maintaind => added|
 |---|---|
-|prevList|![](./images/prev_list.png)|
-|process|![](./images/maintained_with_added.gif)|
-|list|![](./images/list.png)|
+|prevList|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/prev_list.png)|
+|process|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/maintained_with_added.gif)|
+|list|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/list.png)|
 
 * Synchronize List
 ```js
