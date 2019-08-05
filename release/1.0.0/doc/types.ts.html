@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Source: types.ts | egjs::ListDiffer - API</title>
+    
+    <meta name="description" content="A module that checks the diff when values are added, removed, or changed in an array." />
+    
+        <meta name="keywords" content="diff, arr, list, children, dom, differ, data" />
+        <meta name="keyword" content="diff, arr, list, children, dom, differ, data" />
+    
+    
+    
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <link rel="canonical" href="https://naver.github.io/egjs-list-differ/release/latest/doc/"/>
+    
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"eg.ListDiffer","disqus":"egjs","googleAnalytics":"UA-70842526-25","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"egjs::ListDiffer - API","description":"A module that checks the diff when values are added, removed, or changed in an array.","keyword":"diff, arr, list, children, dom, differ, data"},"linenums":true,"link":{"canonical":"https://naver.github.io/egjs-list-differ/release/latest/doc/"}};
+    </script>
+    
+
+    
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', config.googleAnalytics]);
+      _gaq.push(['_trackPageview']);
+    
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName">
+        <a href="//naver.github.io/egjs/"><img style="width:40px; height:20px;" src="img/type_white.svg"/></a>
+
+        <!-- Homepage link (prefer link.home than applicationName) -->
+        
+        <a href="//naver.github.io/egjs-listdiffer/">ListDiffer</a>
+        
+    </h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+        <li class="item">
+            <span class="title">
+                <a href="index.html">README</a>
+            </span>
+        </li>
+    
+        <!-- Non Grouping Version -->
+        
+            
+
+<li class="item" data-name="eg.ListDiffer">
+    <span class="title">
+        <a href="eg.ListDiffer.html">eg.ListDiffer</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    <span class="subtitle">Typedefs</span>
+    
+        <li data-name="eg.ListDiffer.DiffResult"><a href="eg.ListDiffer.html#.DiffResult">DiffResult</a></li>
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.ListDiffer.diff"><a href="eg.ListDiffer.html#.diff">diff</a></li>
+    
+        <li data-name="eg.ListDiffer#update"><a href="eg.ListDiffer.html#update">update</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+    
+    </ul>
+</div>
+
+    <div class="main">
+        <h1 class="page-title" data-filename="types.ts.html">Source: types.ts</h1>
+        
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+egjs-list-differ
+Copyright (c) 2019-present NAVER Corp.
+MIT license
+*/
+export interface MapInteface&lt;T, U> {
+  get(key: T): U | undefined;
+  set(key: T, value: U): any;
+}
+export type MapConstructor&lt;T, U> = new () => MapInteface &lt;T, U>;
+export interface ListFormat&lt;T = any> {
+  [index: number]: T;
+  length: number;
+}
+/**
+ * @typedef
+ * @memberof eg.ListDiffer
+ * @property - List before update &lt;ko>업데이트하기 전 데이터&lt;/ko>
+ * @property - Updated list &lt;ko>업데이트하는 데이터&lt;/ko>
+ * @property - Index array of values added to `list` &lt;ko>`list`에서 추가되는 데이터의 인덱스 배열&lt;/ko>
+ * @property - Index array of values removed in `prevList` &lt;ko>`prevList`에서 제거되는 데이터의 인덱스 배열&lt;/ko>
+ * @property - An array of index pairs of `prevList` and `list` with different indexes from `prevList` and `list`&lt;ko>이전 리스트`prevList`와 지금 리스트`list`에서 위치가 다른 `prevList`와 `list`의 인덱스 배열들&lt;/ko>
+ * @property - An array of index pairs to be `ordered` that can synchronize `list` before adding data. (Formatted by: Array&lt;[prevIndex, nextIndex]>) &lt;ko>데이터를 추가하기 전 `list`를 동기화할 수 있는 정렬되는 인덱스 배열들(형태: Array&lt;[이전 인덱스, 다음 인덱스]>) &lt;/ko>
+ * @property - The subset of `changed` and an array of index pairs that moved data directly. Indicate an array of absolute index pairs of `ordered`.(Formatted by: Array&lt;[index of prevList, index of list]>)&lt;ko>`changed`의 부분집합으로 데이터를 추가하기 전 직접 움직이는 데이터의 인덱스 배열들. `ordered`의 절대적인 인덱스 배열들을 나타내기도 한다. (형태: Array&lt;[prevList인덱스, list인덱스]>)&lt;/ko>
+ * @property - An array of index pairs of `prevList` and `list` that have not been added/removed so data is preserved&lt;ko>추가/삭제 되지 않아 데이터가 보존된 `prevList`와 `list`의 인덱스 배열들&lt;/ko>
+ */
+export interface DiffResult&lt;T> {
+  prevList: T[];
+  list: T[];
+  added: number[];
+  removed: number[];
+  changed: number[][];
+  ordered: number[][];
+  pureChanged: number[][];
+  maintained: number[][];
+}
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+        <!-- disqus code -->
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        <!-- // disqus code -->
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 0.3.7</a> on Mon Aug 05 2019 15:23:28 GMT+0900 (GMT+09:00)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

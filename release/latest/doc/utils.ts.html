@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Source: utils.ts | egjs::ListDiffer - API</title>
+    
+    <meta name="description" content="A module that checks the diff when values are added, removed, or changed in an array." />
+    
+        <meta name="keywords" content="diff, arr, list, children, dom, differ, data" />
+        <meta name="keyword" content="diff, arr, list, children, dom, differ, data" />
+    
+    
+    
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <link rel="canonical" href="https://naver.github.io/egjs-list-differ/release/latest/doc/"/>
+    
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"eg.ListDiffer","disqus":"egjs","googleAnalytics":"UA-70842526-25","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"egjs::ListDiffer - API","description":"A module that checks the diff when values are added, removed, or changed in an array.","keyword":"diff, arr, list, children, dom, differ, data"},"linenums":true,"link":{"canonical":"https://naver.github.io/egjs-list-differ/release/latest/doc/"}};
+    </script>
+    
+
+    
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', config.googleAnalytics]);
+      _gaq.push(['_trackPageview']);
+    
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName">
+        <a href="//naver.github.io/egjs/"><img style="width:40px; height:20px;" src="img/type_white.svg"/></a>
+
+        <!-- Homepage link (prefer link.home than applicationName) -->
+        
+        <a href="//naver.github.io/egjs-listdiffer/">ListDiffer</a>
+        
+    </h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+        <li class="item">
+            <span class="title">
+                <a href="index.html">README</a>
+            </span>
+        </li>
+    
+        <!-- Non Grouping Version -->
+        
+            
+
+<li class="item" data-name="eg.ListDiffer">
+    <span class="title">
+        <a href="eg.ListDiffer.html">eg.ListDiffer</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    <span class="subtitle">Typedefs</span>
+    
+        <li data-name="eg.ListDiffer.DiffResult"><a href="eg.ListDiffer.html#.DiffResult">DiffResult</a></li>
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.ListDiffer.diff"><a href="eg.ListDiffer.html#.diff">diff</a></li>
+    
+        <li data-name="eg.ListDiffer#update"><a href="eg.ListDiffer.html#update">update</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+    
+    </ul>
+</div>
+
+    <div class="main">
+        <h1 class="page-title" data-filename="utils.ts.html">Source: utils.ts</h1>
+        
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/*
+egjs-list-differ
+Copyright (c) 2019-present NAVER Corp.
+MIT license
+*/
+import { MapInteface, DiffResult } from "./types";
+import PolyMap from "./PolyMap";
+import HashMap from "./HashMap";
+import { SUPPORT_MAP } from "./consts";
+import Result from "./Result";
+
+/**
+ *
+ * @memberof eg.ListDiffer
+ * @static
+ * @function
+ * @param - Previous List &lt;ko> 이전 목록 &lt;/ko>
+ * @param - List to Update &lt;ko> 업데이트 할 목록 &lt;/ko>
+ * @param - This callback function returns the key of the item. &lt;ko> 아이템의 키를 반환하는 콜백 함수입니다.&lt;/ko>
+ * @return - Returns the diff between `prevList` and `list` &lt;ko> `prevList`와 `list`의 다른 점을 반환한다.&lt;/ko>
+ * @example
+ * import { diff } from "@egjs/list-differ";
+ * // script => eg.ListDiffer.diff
+ * const result = diff([0, 1, 2, 3, 4, 5], [7, 8, 0, 4, 3, 6, 2, 1], e => e);
+ * // List before update
+ * // [1, 2, 3, 4, 5]
+ * console.log(result.prevList);
+ * // Updated list
+ * // [4, 3, 6, 2, 1]
+ * console.log(result.list);
+ * // Index array of values added to `list`
+ * // [0, 1, 5]
+ * console.log(result.added);
+ * // Index array of values removed in `prevList`
+ * // [5]
+ * console.log(result.removed);
+ * // An array of index pairs of `prevList` and `list` with different indexes from `prevList` and `list`
+ * // [[0, 2], [4, 3], [3, 4], [2, 6], [1, 7]]
+ * console.log(result.changed);
+ * // The subset of `changed` and an array of index pairs that moved data directly. Indicate an array of absolute index pairs of `ordered`.(Formatted by: Array&lt;[index of prevList, index of list]>)
+ * // [[4, 3], [3, 4], [2, 6]]
+ * console.log(result.pureChanged);
+ * // An array of index pairs to be `ordered` that can synchronize `list` before adding data. (Formatted by: Array&lt;[prevIndex, nextIndex]>)
+ * // [[4, 1], [4, 2], [4, 3]]
+ * console.log(result.ordered);
+ * // An array of index pairs of `prevList` and `list` that have not been added/removed so data is preserved
+ * // [[0, 2], [4, 3], [3, 4], [2, 6], [1, 7]]
+ * console.log(result.maintained);
+ */
+export function diff&lt;T>(
+  prevList: T[],
+  list: T[],
+  findKeyCallback?: (e: T, i: number, arr: T[]) => any
+): DiffResult&lt;T> {
+  const mapClass: new () => MapInteface&lt;any, number> = SUPPORT_MAP ? Map : (findKeyCallback ? HashMap : PolyMap);
+  const callback = findKeyCallback || ((e: T) => e);
+  const added: number[] = [];
+  const removed: number[] = [];
+  const maintained: number[][] = [];
+  const prevKeys = prevList.map(callback);
+  const keys = list.map(callback);
+  const prevKeyMap: MapInteface&lt;any, number> = new mapClass();
+  const keyMap: MapInteface&lt;any, number> = new mapClass();
+  const changedBeforeAdded: number[][] = [];
+  const fixed: boolean[] = [];
+  const removedMap: object = {};
+  let changed: number[][] = [];
+  let addedCount = 0;
+  let removedCount = 0;
+
+  // Add prevKeys and keys to the hashmap.
+  prevKeys.forEach((key, prevListIndex) => {
+    prevKeyMap.set(key, prevListIndex);
+  });
+  keys.forEach((key, listIndex) => {
+    keyMap.set(key, listIndex);
+  });
+
+  // Compare `prevKeys` and `keys` and add them to `removed` if they are not in `keys`.
+  prevKeys.forEach((key, prevListIndex) => {
+    const listIndex = keyMap.get(key);
+
+    // In prevList, but not in list, it is removed.
+    if (typeof listIndex === "undefined") {
+      ++removedCount;
+      removed.push(prevListIndex);
+    } else {
+      removedMap[listIndex] = removedCount;
+    }
+  });
+
+  // Compare `prevKeys` and `keys` and add them to `added` if they are not in `prevKeys`.
+  keys.forEach((key, listIndex) => {
+    const prevListIndex = prevKeyMap.get(key);
+
+    // In list, but not in prevList, it is added.
+    if (typeof prevListIndex === "undefined") {
+      added.push(listIndex);
+      ++addedCount;
+    } else {
+      maintained.push([prevListIndex, listIndex]);
+      removedCount = removedMap[listIndex] || 0;
+
+      changedBeforeAdded.push([
+        prevListIndex - removedCount,
+        listIndex - addedCount,
+      ]);
+      fixed.push(listIndex === prevListIndex);
+      if (prevListIndex !== listIndex) {
+        changed.push([prevListIndex, listIndex]);
+      }
+    }
+  });
+  // Sort by ascending order of 'to(list's index).
+  removed.reverse();
+
+  return new Result(
+    prevList,
+    list,
+    added,
+    removed,
+    changed,
+    maintained,
+    changedBeforeAdded,
+    fixed,
+  );
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+
+
+        
+        <!-- disqus code -->
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        <!-- // disqus code -->
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 0.3.7</a> on Mon Aug 05 2019 15:23:28 GMT+0900 (GMT+09:00)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

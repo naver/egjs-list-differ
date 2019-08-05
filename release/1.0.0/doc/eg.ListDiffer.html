@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Class: ListDiffer | egjs::ListDiffer - API</title>
+    
+    <meta name="description" content="A module that checks the diff when values are added, removed, or changed in an array." />
+    
+        <meta name="keywords" content="diff, arr, list, children, dom, differ, data" />
+        <meta name="keyword" content="diff, arr, list, children, dom, differ, data" />
+    
+    
+    
+    <meta property="og:title" content=""/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content=""/>
+    
+    <meta property="og:url" content=""/>
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <link rel="canonical" href="https://naver.github.io/egjs-list-differ/release/latest/doc/"/>
+    
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":true,"cleverLinks":true,"default":{"outputSourceFiles":true},"applicationName":"eg.ListDiffer","disqus":"egjs","googleAnalytics":"UA-70842526-25","openGraph":{"title":"","type":"website","image":"","site_name":"","url":""},"meta":{"title":"egjs::ListDiffer - API","description":"A module that checks the diff when values are added, removed, or changed in an array.","keyword":"diff, arr, list, children, dom, differ, data"},"linenums":true,"link":{"canonical":"https://naver.github.io/egjs-list-differ/release/latest/doc/"}};
+    </script>
+    
+
+    
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', config.googleAnalytics]);
+      _gaq.push(['_trackPageview']);
+    
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName">
+        <a href="//naver.github.io/egjs/"><img style="width:40px; height:20px;" src="img/type_white.svg"/></a>
+
+        <!-- Homepage link (prefer link.home than applicationName) -->
+        
+        <a href="//naver.github.io/egjs-listdiffer/">ListDiffer</a>
+        
+    </h3>
+
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentations">
+    </div>
+    <ul class="list">
+        <li class="item">
+            <span class="title">
+                <a href="index.html">README</a>
+            </span>
+        </li>
+    
+        <!-- Non Grouping Version -->
+        
+            
+
+<li class="item" data-name="eg.ListDiffer">
+    <span class="title">
+        <a href="eg.ListDiffer.html">eg.ListDiffer</a>
+        
+    </span>
+    <ul class="members itemMembers expends">
+    
+    </ul>
+    <ul class="typedefs itemMembers expends">
+    
+    <span class="subtitle">Typedefs</span>
+    
+        <li data-name="eg.ListDiffer.DiffResult"><a href="eg.ListDiffer.html#.DiffResult">DiffResult</a></li>
+    
+    </ul>
+    <ul class="methods itemMembers expends">
+    
+    <span class="subtitle">Methods</span>
+    
+        <li data-name="eg.ListDiffer.diff"><a href="eg.ListDiffer.html#.diff">diff</a></li>
+    
+        <li data-name="eg.ListDiffer#update"><a href="eg.ListDiffer.html#update">update</a></li>
+    
+    </ul>
+    <ul class="events itemMembers expends">
+    
+    </ul>
+
+    
+</li>
+
+        
+    
+    </ul>
+</div>
+
+    <div class="main">
+        <h1 class="page-title" data-filename="eg.ListDiffer.html">Class: ListDiffer</h1>
+        
+
+
+
+<section>
+
+<header>
+    <h2>
+    
+        <span>eg.ListDiffer</span>
+        
+    </h2>
+    <button id="toggle">
+        
+            English
+        
+    </button>
+</header>
+
+<article>
+    <div class="container-overview">
+    
+
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="ListDiffer">
+            
+            new eg.ListDiffer<span class="signature">(<span class="optional">list</span>, <span class="optional">findKeyCallback</span>)</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="ListDiffer.ts.html">ListDiffer.ts</a>, <a href="ListDiffer.ts.html#line14">line 14</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>A module that checks diff when values are added, removed, or changed in an array.</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>배열 또는 오브젝트에서 값이 추가되거나 삭제되거나 순서가 변경사항을 체크하는 모듈입니다.</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>list</strong>
+            
+                (default: <code>[]</code>)
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">ListFormat&lt;T></span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Initializing Data Array. </p></div>
+            <div class="description ko"><p> 초기 설정할 데이터 배열.</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>findKeyCallback</strong>
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">(e: T, i: number, arr: T[]) => number | string</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>This callback function returns the key of the item. </p></div>
+            <div class="description ko"><p> 아이템의 키를 반환하는 콜백 함수입니다.</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>import ListDiffer from &quot;@egjs/list-differ&quot;;<br>
+// script =&gt; eg.ListDiffer<br>
+const differ = new ListDiffer([0, 1, 2, 3, 4, 5], e =&gt; e);<br>
+const result = differ.update([7, 8, 0, 4, 3, 6, 2, 1]);<br>
+// List before update<br>
+// [1, 2, 3, 4, 5]<br>
+console.log(result.prevList);<br>
+// Updated list<br>
+// [4, 3, 6, 2, 1]<br>
+console.log(result.list);<br>
+// Index array of values added to <code>list</code>.<br>
+// [0, 1, 5]<br>
+console.log(result.added);<br>
+// Index array of values removed in <code>prevList</code>.<br>
+// [5]<br>
+console.log(result.removed);<br>
+// An array of index pairs of <code>prevList</code> and <code>list</code> with different indexes from <code>prevList</code> and <code>list</code>.<br>
+// [[0, 2], [4, 3], [3, 4], [2, 6], [1, 7]]<br>
+console.log(result.changed);<br>
+// The subset of <code>changed</code> and an array of index pairs that moved data directly. Indicate an array of absolute index pairs of <code>ordered</code>.(Formatted by: Array&lt;[index of prevList, index of list]&gt;)<br>
+// [[4, 3], [3, 4], [2, 6]]<br>
+console.log(result.pureChanged);<br>
+// An array of index pairs to be <code>ordered</code> that can synchronize <code>list</code> before adding data. (Formatted by: Array&lt;[prevIndex, nextIndex]&gt;)<br>
+// [[4, 1], [4, 2], [4, 3]]<br>
+console.log(result.ordered);<br>
+// An array of index pairs of <code>prevList</code> and <code>list</code> that have not been added/removed so data is preserved.<br>
+// [[0, 2], [4, 3], [3, 4], [2, 6], [1, 7]]<br>
+console.log(result.maintained);</p></code></pre>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+
+
+        
+
+
+    
+    </div>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id=".diff">
+            
+            <span class="type-signature static">static</span>eg.ListDiffer.diff<span class="signature">(prevList, list, <span class="optional">findKeyCallback</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.ListDiffer.html#.DiffResult">DiffResult</a>&lt;T>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="utils.ts.html">utils.ts</a>, <a href="utils.ts.html#line50">line 50</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		
+	</div>
+	
+	
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>prevList</strong>
+            
+
+            
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">T[]</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>Previous List </p></div>
+            <div class="description ko"><p> 이전 목록 </p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>list</strong>
+            
+
+            
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">T[]</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>List to Update </p></div>
+            <div class="description ko"><p> 업데이트 할 목록 </p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>findKeyCallback</strong>
+            
+
+            
+                
+                    <span class="optional">optional</span>
+                
+                
+                    
+                
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">(e: T, i: number, arr: T[]) => any</span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>This callback function returns the key of the item. </p></div>
+            <div class="description ko"><p> 아이템의 키를 반환하는 콜백 함수입니다.</p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    	
+                        <a href="eg.ListDiffer.html#.DiffResult">DiffResult</a>&lt;T>
+                        
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en"><ul>
+<li>Returns the diff between <code>prevList</code> and <code>list</code> </li>
+</ul></div>
+                <div class="ko"><p> <code>prevList</code>와 <code>list</code>의 다른 점을 반환한다.</p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+        <h5>Example</h5>
+        
+
+    
+    <pre class="prettyprint"><code><p>import { diff } from &quot;@egjs/list-differ&quot;;<br>
+// script =&gt; eg.ListDiffer.diff<br>
+const result = diff([0, 1, 2, 3, 4, 5], [7, 8, 0, 4, 3, 6, 2, 1], e =&gt; e);<br>
+// List before update<br>
+// [1, 2, 3, 4, 5]<br>
+console.log(result.prevList);<br>
+// Updated list<br>
+// [4, 3, 6, 2, 1]<br>
+console.log(result.list);<br>
+// Index array of values added to <code>list</code><br>
+// [0, 1, 5]<br>
+console.log(result.added);<br>
+// Index array of values removed in <code>prevList</code><br>
+// [5]<br>
+console.log(result.removed);<br>
+// An array of index pairs of <code>prevList</code> and <code>list</code> with different indexes from <code>prevList</code> and <code>list</code><br>
+// [[0, 2], [4, 3], [3, 4], [2, 6], [1, 7]]<br>
+console.log(result.changed);<br>
+// The subset of <code>changed</code> and an array of index pairs that moved data directly. Indicate an array of absolute index pairs of <code>ordered</code>.(Formatted by: Array&lt;[index of prevList, index of list]&gt;)<br>
+// [[4, 3], [3, 4], [2, 6]]<br>
+console.log(result.pureChanged);<br>
+// An array of index pairs to be <code>ordered</code> that can synchronize <code>list</code> before adding data. (Formatted by: Array&lt;[prevIndex, nextIndex]&gt;)<br>
+// [[4, 1], [4, 2], [4, 3]]<br>
+console.log(result.ordered);<br>
+// An array of index pairs of <code>prevList</code> and <code>list</code> that have not been added/removed so data is preserved<br>
+// [[0, 2], [4, 3], [3, 4], [2, 6], [1, 7]]<br>
+console.log(result.maintained);</p></code></pre>
+    
+
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="update">
+            
+            update<span class="signature">(list)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="eg.ListDiffer.html#.DiffResult">DiffResult</a>&lt;T>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            <a href="ListDiffer.ts.html">ListDiffer.ts</a>, <a href="ListDiffer.ts.html#line61">line 61</a>
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+	<div class="description en">
+		<p>Update list.</p>
+	</div>
+	
+	
+	<div class="description ko">
+		<p>리스트를 업데이트를 합니다.</p>
+	</div>
+	
+
+    
+    
+    
+    
+    
+        
+
+<ul class="parameters">
+    
+    <li>
+        <!-- parameter name -->
+        <div>
+            <strong>list</strong>
+            
+
+            
+        </div>
+        <!-- parameter type -->
+        
+        <div>Type: 
+<span class="param-type">ListFormat&lt;T></span>
+
+</div>
+        
+    
+        <!-- Description -->
+        <div>
+            
+            <div class="description en"><p>List to update </p></div>
+            <div class="description ko"><p> 업데이트할 리스트 </p></div>
+            
+        </div>
+
+        <!-- Sub parameters -->
+        
+    </li>
+    
+</ul>
+    
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                    	
+                        <a href="eg.ListDiffer.html#.DiffResult">DiffResult</a>&lt;T>
+                        
+                        
+                    
+            </td>
+            <td class="description last">
+                
+                <div class="en"><ul>
+<li>Returns the results of an update from <code>prevList</code> to <code>list</code>.</li>
+</ul></div>
+                <div class="ko"><p> <code>prevList</code>에서 <code>list</code>로 업데이트한 결과를 반환한다. </p></div>
+                
+
+                
+            </td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+</dd>
+
+        </dl>
+    
+
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        <dl>
+                
+
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id=".DiffResult">eg.ListDiffer.DiffResult<span class="type-signature type tsinterface">TSInterface</span> </h4>
+    </div>
+    
+</dt>
+<dd>
+    
+    
+
+    
+<dl class="details">
+    
+        <h5 class="subsection-title">Properties:</h5>
+
+        <dl>
+
+<table class="props">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>prevList</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">T[]</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">
+                
+                <div class="en"><p>List before update </p></div>
+                <div class="ko"><p>업데이트하기 전 데이터</p></div>
+                
+
+                </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>list</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">T[]</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">
+                
+                <div class="en"><p>Updated list </p></div>
+                <div class="ko"><p>업데이트하는 데이터</p></div>
+                
+
+                </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>added</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number[]</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">
+                
+                <div class="en"><p>Index array of values added to <code>list</code> </p></div>
+                <div class="ko"><p><code>list</code>에서 추가되는 데이터의 인덱스 배열</p></div>
+                
+
+                </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>removed</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number[]</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">
+                
+                <div class="en"><p>Index array of values removed in <code>prevList</code> </p></div>
+                <div class="ko"><p><code>prevList</code>에서 제거되는 데이터의 인덱스 배열</p></div>
+                
+
+                </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>changed</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number[][]</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">
+                
+                <div class="en"><p>An array of index pairs of <code>prevList</code> and <code>list</code> with different indexes from <code>prevList</code> and <code>list</code></p></div>
+                <div class="ko"><p>이전 리스트<code>prevList</code>와 지금 리스트<code>list</code>에서 위치가 다른 <code>prevList</code>와 <code>list</code>의 인덱스 배열들</p></div>
+                
+
+                </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>ordered</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number[][]</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">
+                
+                <div class="en"><p>An array of index pairs to be <code>ordered</code> that can synchronize <code>list</code> before adding data. (Formatted by: Array&lt;[prevIndex, nextIndex]&gt;) </p></div>
+                <div class="ko"><p>데이터를 추가하기 전 <code>list</code>를 동기화할 수 있는 정렬되는 인덱스 배열들(형태: Array&lt;[이전 인덱스, 다음 인덱스]&gt;) </p></div>
+                
+
+                </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>pureChanged</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number[][]</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">
+                
+                <div class="en"><p>The subset of <code>changed</code> and an array of index pairs that moved data directly. Indicate an array of absolute index pairs of <code>ordered</code>.(Formatted by: Array&lt;[index of prevList, index of list]&gt;)</p></div>
+                <div class="ko"><p><code>changed</code>의 부분집합으로 데이터를 추가하기 전 직접 움직이는 데이터의 인덱스 배열들. <code>ordered</code>의 절대적인 인덱스 배열들을 나타내기도 한다. (형태: Array&lt;[prevList인덱스, list인덱스]&gt;)</p></div>
+                
+
+                </td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>maintained</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number[][]</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">
+                
+                <div class="en"><p>An array of index pairs of <code>prevList</code> and <code>list</code> that have not been added/removed so data is preserved</p></div>
+                <div class="ko"><p>추가/삭제 되지 않아 데이터가 보존된 <code>prevList</code>와 <code>list</code>의 인덱스 배열들</p></div>
+                
+
+                </td>
+        </tr>
+	
+	
+	</tbody>
+</table></dl>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+    <!-- if data.codepen -->
+</dl>
+
+
+    
+</dd>
+
+            </dl>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+        
+        <!-- disqus code -->
+        <div id="disqus_thread"></div>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="//disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+        <!-- // disqus code -->
+        
+
+        <footer>
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 0.3.7</a> on Mon Aug 05 2019 15:23:28 GMT+0900 (GMT+09:00)
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/main.js"></script>
+</body>
+</html>
