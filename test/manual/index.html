@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<style>
+  * {
+    line-height: 40px;
+  }
+
+  .diff {
+    font-size: 0;
+  }
+
+  .before,
+  .after {
+    font-size: 14px;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 5px;
+  }
+
+  .a {
+    position: relative;
+    height: 40px;
+  }
+
+.title, .description {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+}
+  .title {
+    text-align: right;
+    width: 150px;
+  }
+
+  .description {
+    margin-left: 10px;
+    white-space: nowrap;
+    width: 280px;
+    text-align: left;
+  }
+
+  span {
+    display: inline-block;
+    box-sizing: border-box;
+    width: 30px;
+    line-height: 30px;
+    height: 30px;
+    text-align: center;
+  }
+
+  span.added,
+  span.removed,
+  span.changed {
+    display: inline-block;
+  }
+
+  span.added {
+    background: rgb(127, 238, 127);
+  }
+
+  span.ordered.added {
+    background: rgba(127, 238, 127, 0.3);
+  }
+
+  span.removed {
+    background: rgb(238, 127, 127);
+  }
+
+  span.ordered.removed {
+    background: rgba(238, 127, 127, 0.3);
+  }
+
+  span.changed {
+    background: rgb(127, 127, 238);
+  }
+
+  .animated-maintained .a:nth-child(1) .description>span {
+    margin-right: 8.5px;
+  }
+  .animated-changed .description span,
+  .animated-maintained .a:nth-child(2) .description span {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+</style>
+<div id="container">
+  <div id="prevList"></div>
+  <div id="list"></div>
+  <div id="removed"></div>
+  <div id="added"></div>
+  <div>
+    <div class="title">changed:</div>
+  </div>
+  <div id="changed">
+  </div>
+  <div class="diff">
+    <div class="before">
+      <div class="title">BeforeAdded</div>
+      <div>
+        <div class="title">ordered:</div>
+      </div>
+      <div id="ordered"></div>
+    </div>
+  </div>
+  <div class="diff">
+    <div class="before">
+      <div>
+        <div class="title">pureChanged:</div>
+      </div>
+      <div id="pureChanged"></div>
+    </div>
+  </div>
+  <div class="diff">
+    <div class="before">
+      <div>
+        <div class="title">pureChanged:</div>
+      </div>
+      <div id="pureChanged2" class="animated animated-changed"></div>
+    </div>
+  </div>
+  <div class="diff">
+    <div class="before">
+      <div>
+        maintained + added:
+      </div>
+      <div id="maintained1" class="animated animated-maintained"></div>
+    </div>
+    <div class="after">
+      added + maintained:
+      <div id="maintained2" class="animated animated-maintained"></div>
+    </div>
+  </div>
+</div>
+<div class="diff">
+  <div class="before">
+    <div>
+      maintained, added:
+    </div>
+    <div id="maintained3" class="animated animated-maintained"></div>
+  </div>
+</div>
+</div>
+<script src="https://daybrush.com/scenejs/release/latest/dist/scene.min.js"></script>
+<script src="../../dist/list-differ.pkgd.js"></script>
+<script>
+  function a(title, description, className = "") {
+    return `<div class="a ${className}"><span class="title">${title}</span><span class="description">${description}</span></div>`;
+  }
+  const differ = new eg.ListDiffer([1, 2, 3, 4, 5, 6, 7]);
+
+  const result = differ.update([4, 3, 8, 2, 1, 7]);
+
+  result.prevList = result.prevList.map(data => `<span>${data}</span>`);
+  result.list = result.list.map(data => `<span>${data}</span>`);
+
+  const resultList = result.list;
+  const resultPrevList = result.prevList;
+  const allList = result.prevList.slice();
+
+  result.removed.forEach(index => {
+    allList[index] = `<span class="removed">${allList[index]}</span>`;
+  });
+  result.added.forEach(index => {
+    allList.splice(index, 0, `<div class="added"><span class="added">${resultList[index]}</span></div>`);
+  })
+
+  pureChanged2.innerHTML = a("prevList:", allList.join(""));
+
+
+  prevList.innerHTML = a("prevList:", result.prevList);
+  list.innerHTML = a("list:", resultList);
+  added.innerHTML = a("added:", resultList.map(
+    (data, index) => result.added.indexOf(index) > -1 ? `<span class="added">${data}</span>` : `${data}`,
+  ));
+  removed.innerHTML = a("removed:", result.prevList.map(
+    (data, index) => result.removed.indexOf(index) > -1 ? `<span class="removed">${data}</span>` : `<span>${data}</span>`,
+  ));
+
+  function change(el, resultChanged) {
+    const resultPrevList = result.prevList.slice();
+    const resultList2 = resultList.slice();
+    resultChanged.forEach(([from, to]) => {
+      resultPrevList[from] = `<span class="changed">${resultPrevList[from]}</span>`;
+      resultList2[to] = `<span class="changed">${resultList2[to]}</span>`;
+    });
+    el.innerHTML = a("prevList:", resultPrevList) + a("list:", resultList2);
+  }
+  change(changed, result.changed);
+  change(pureChanged, result.pureChanged);
+
+
+
+  function order(el) {
+    const resultOrdered = result.ordered;
+    const resultPrevList = result.prevList.slice();
+
+    el.innerHTML = a(`prevList`, `<div>${resultPrevList}</div>`);
+    result.removed.forEach(index => {
+      resultPrevList[index] = `<span class="removed">${resultPrevList[index]}</span>`;
+    });
+    result.removed.length && (el.innerHTML += a(`removed`, `<div>${resultPrevList}</div>`));
+    result.removed.forEach(index => {
+      resultPrevList.splice(index, 1);
+    });
+
+    resultOrdered.forEach(([from, to], i) => {
+
+      const showPrevList = resultPrevList.slice();
+
+      const prev = showPrevList[from];
+      showPrevList[from] = `<span class="ordered removed">${prev}</span>`;
+      showPrevList.splice(from < to ? to + 1 : to, 0, `<span class="ordered added">${prev}</span>`);
+
+      el.innerHTML += a(`ordered${i}`, `<div>${showPrevList}</div>`, "ordered_area");
+      const key = resultPrevList.splice(from, 1)[0];
+
+      resultPrevList.splice(to, 0, key);
+    });
+
+    result.added.forEach(index => {
+      resultPrevList.splice(index, 0, `<span class="added">${resultList[index]}</span>`);
+    })
+    result.added.length && (el.innerHTML += a("added", `<div>${resultPrevList}</div>`));
+
+    el.innerHTML += a(`list`, `<div>${resultList}</div>`);
+  }
+
+  order(ordered, false);
+
+  const size = 38.5;
+
+  Scene.setAlias("left", ["transform", "translate"]);
+  const pureChangedScene = new Scene({
+    "#pureChanged2 .description>span": (i, el) => {
+      return {
+        0: {
+          "top": "0px",
+          "left": `${i * size}px`,
+          "background-color": "rgba(255, 255, 255, 0)",
+        },
+      };
+    },
+  }, {
+      selector: true,
+      delay: 0.5,
+      easing: "ease-in-out",
+      iterationCount: "infinite",
+    });
+  const changedAfterAddedScene = new Scene({
+    "#changedAfterAdded2 .description>span": (i, el) => {
+      return {
+        0: {
+          "top": "0px",
+          "left": `${i * size}px`,
+          "background-color": "rgba(255, 255, 255, 0)",
+        },
+      };
+    },
+  }, {
+      selector: true,
+      delay: 0.5,
+      easing: "ease-in-out",
+      iterationCount: "infinite",
+    });
+
+  const pureChangedItem = pureChangedScene.getItem("#pureChanged2 .description>span");
+  const changedAfterAddedItem = changedAfterAddedScene.getItem("#changedAfterAdded2 .description>span");
+
+  const pureChangedIndexes = result.prevList.map((_, i) => i);
+  const changedAfterAddedIndexes = result.prevList.map((_, i) => i);
+  function removeScene(scene, item, indexes) {
+    result.removed.forEach((index, depth) => {
+      indexes.splice(index, 1);
+
+      const length = indexes.length;
+      const deletedItem = item.getItem(index);
+      const time = scene.getDuration();
+      deletedItem.set({
+        [time]: {
+          "background-color": "rgba(238, 127, 127, 0)",
+        },
+        [time + 0.5]: {
+          "background-color": "rgba(238, 127, 127, 1)",
+          "opacity": 1,
+        },
+        [time + 1]: {
+          "opacity": 0,
+        },
+      });
+      for (let i = index; i < length; ++i) {
+        item.getItem(indexes[i]).set({
+          [depth + 1]: {
+            "left": `${i * size}px`,
+          },
+        });
+      }
+    });
+  }
+  function orderScene(scene, item, indexes, ordered) {
+    ordered.forEach(([from, to], depth) => {
+      const time = scene.getDuration() + 0.1;
+      const index = indexes[from];
+      const moveItem = item.getItem(index);
+
+      moveItem.set({
+        [time]: {
+          "background-color": "rgba(127, 127, 238, 0)",
+          "left": `${from * size}px`,
+        },
+        [time + 0.5]: {
+          "background-color": "rgba(127, 127, 238, 1)",
+        },
+        [time + 1]: {
+          "left": `${to * size}px`,
+        },
+      });
+
+      if (from < to) {
+        for (let i = from + 1; i <= to; ++i) {
+          const shiftItem = item.getItem(indexes[i]);
+          item.getItem(indexes[i]).set({
+            [time]: {
+              "left": `${i * size}px`,
+            },
+            [time + 1]: {
+              "left": `${(i - 1) * size}px`,
+            },
+          });
+        }
+      } else {
+        for (let i = to; i < from; ++i) {
+          const shiftItem = item.getItem(indexes[i]);
+          item.getItem(indexes[i]).set({
+            [time]: {
+              "left": `${i * size}px`,
+            },
+            [time + 1]: {
+              "left": `${(i + 1) * size}px`,
+            },
+          });
+        }
+      }
+      indexes.splice(from, 1);
+      indexes.splice(to, 0, index);
+    });
+  }
+  function addScene(scene, item, indexes, selector) {
+    let count = result.prevList.length;
+
+    result.added.forEach((index, i) => {
+      const time = scene.getDuration() + 0.1;
+      const addedItem = item.newItem(count);
+
+      addedItem.setId(`${selector}>span:nth-child(${i + 1})`);
+      addedItem.setSelector(`${selector}>span:nth-child(${i + 1})`);
+
+      addedItem.set({
+        [time]: {
+          "opacity": 0,
+          "left": `${index * size}px`,
+          "background-color": "rgb(127, 238, 127)",
+        },
+        [time + 0.5]: {
+          opacity: 1,
+        },
+      });
+
+      const length = indexes.length;
+      for (let j = index; j < length; ++j) {
+        item.getItem(indexes[j]).set({
+          [time]: {
+            "left": `${j * size}px`,
+          },
+          [time + 1]: {
+            "left": `${(j + 1) * size}px`,
+          },
+        });
+      }
+      indexes.splice(index, 0, count++);
+    });
+  }
+
+  function completeScene(scene, item, indexes) {
+    const time = scene.getDuration() + 0.1;
+
+    result.added.forEach(index => {
+      item.getItem(indexes[index]).set({
+        [time]: {
+          "background-color": "rgb(127, 238, 127)",
+        },
+        [time + 0.5]: {
+          "background-color": "rgba(127, 238, 127, 0)",
+        },
+        [time + 1]: {},
+      });
+    });
+    scene.playCSS();
+  }
+
+  removeScene(pureChangedScene, pureChangedItem, pureChangedIndexes);
+  orderScene(pureChangedScene, pureChangedItem, pureChangedIndexes, result.ordered);
+  addScene(pureChangedScene, pureChangedItem, pureChangedIndexes, "#pureChanged2 .description>.added");
+  completeScene(pureChangedScene, pureChangedItem, pureChangedIndexes);
+
+
+
+  /* maintained */
+  maintained1.innerHTML =
+    a("prevList:", result.prevList.join("")) +
+    a("list:", resultList.join("")) +
+    a("list:", resultList);
+  maintained2.innerHTML =
+    a("prevList:", result.prevList.join("")) +
+    a("list:", resultList.join("")) +
+    a("list:", resultList);
+  maintained3.innerHTML =
+    a("prevList:", result.prevList.join("")) +
+    a("list:", resultList.join("")) +
+    a("list:", resultList);
+  const maintainedScene1 = new Scene({
+    "#maintained1 .a:nth-child(2) .description>span": i => ({}),
+  }, {
+    iterationCount: "infinite",
+    selector: true,
+    easing: "ease-in-out",
+    delay: 0.5,
+  });
+  const maintainedScene2 = new Scene({
+    "#maintained2 .a:nth-child(2) .description>span": i => ({}),
+  }, {
+    iterationCount: "infinite",
+    selector: true,
+    easing: "ease-in-out",
+    delay: 0.5,
+  });
+  const maintainedScene3 = new Scene({
+    "#maintained3 .a:nth-child(2) .description>span": i => ({}),
+  }, {
+    iterationCount: "infinite",
+    selector: true,
+    easing: "ease-in-out",
+    delay: 0.5,
+  });
+  const maintainedItem1 = maintainedScene1.getItem("#maintained1 .a:nth-child(2) .description>span");
+  const nextList1 = [];
+  const maintainedItem2 = maintainedScene2.getItem("#maintained2 .a:nth-child(2) .description>span");
+  const nextList2 = [];
+  const maintainedItem3 = maintainedScene3.getItem("#maintained3 .a:nth-child(2) .description>span");
+  const nextList3 = [];
+
+  function maintainScene(scene, item, nextList, isAfterAdded, isShift) {
+    result.maintained.forEach(([from, to], i) => {
+      const time = scene.getDuration() + 0.1;
+      item.getItem(to).set({
+        [time]: {
+          "background-color": "rgba(127, 127, 238, 0)",
+        },
+        [time + 0.5]: {
+          "background-color": "rgba(127, 127, 238, 1)",
+          "top": "-40px",
+          "left": `${from * size}px`,
+        },
+        [time + 1]: {
+          top: "0px",
+          left: `${(isAfterAdded ? to : i) * size}px`,
+        },
+      });
+      if (isAfterAdded) {
+        nextList.splice(to, 0, resultList[to]);
+        isShift && shiftScene(scene, item, nextList, to + 1);
+      } else {
+        nextList.push(resultList[to]);
+      }
+    });
+  }
+  function maintainAddScene(scene, item, nextList, isAfterAdd, isShift) {
+
+    result.added.forEach((index, i) => {
+      const time = scene.getDuration() + 0.1;
+
+      item.getItem(index).set({
+        [time]: {
+          "opacity": 0,
+          "background-color": "rgba(127, 238, 127, 1)",
+          "left": `${(isAfterAdd ? i : index) * size}px`,
+        },
+        [time + 1]: {
+          opacity: 1,
+        },
+      });
+      if (isAfterAdd) {
+        nextList.push(resultList[index]);
+      } else {
+        nextList.splice(index, 0, resultList[index]);
+        isShift && shiftScene(scene, item, nextList, index + 1);
+      }
+    });
+  }
+  function shiftScene(scene, item, nextList, index) {
+    const time = scene.getDuration() + 0.1;
+    const length = nextList.length;
+    // shift
+    for (let i = index; i < length; ++i) {
+      const itemIndex = resultList.indexOf(nextList[i]);
+      item.getItem(itemIndex).set({
+        [time - 1]: {
+          left: `${(i - 1) * size}px`,
+        },
+        [time]: {
+          left: `${i * size}px`,
+        }
+      });
+    }
+  }
+  function completeMaintainScene(scene, item) {
+    const time = scene.getDuration() + 0.1;
+
+    result.added.forEach(index => {
+      item.getItem(index).set({
+        [time]: {
+          "background-color": "rgb(127, 238, 127)",
+        },
+        [time + 0.5]: {
+          "background-color": "rgba(127, 238, 127, 0)",
+        },
+        [time + 1]: {},
+      });
+    });
+    result.maintained.forEach(([from, to]) => {
+      item.getItem(to).set({
+        [time]: {
+          "background-color": "rgba(127, 127, 238, 1)",
+        },
+        [time + 0.5]: {
+          "background-color": "rgba(127, 127, 238, 0)",
+        },
+        [time + 1]: {},
+      });
+    });
+    scene.playCSS();
+  }
+
+  maintainScene(maintainedScene1, maintainedItem1, nextList1, false, true);
+  maintainAddScene(maintainedScene1, maintainedItem1, nextList1, false, true);
+  completeMaintainScene(maintainedScene1, maintainedItem1);
+  maintainAddScene(maintainedScene2, maintainedItem2, nextList2, true, true);
+  maintainScene(maintainedScene2, maintainedItem2, nextList2, true, true);
+  completeMaintainScene(maintainedScene2, maintainedItem2);
+
+  maintainScene(maintainedScene3, maintainedItem3, nextList3, true , false);
+  maintainAddScene(maintainedScene3, maintainedItem3, nextList3, false, false);
+  completeMaintainScene(maintainedScene3, maintainedItem3);
+
+
+</script>

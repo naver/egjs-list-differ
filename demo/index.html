@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <meta name="description"
+    content="A module that checks the diff when values are added, removed, or changed in an array." />
+  <meta property="og:title"
+    content="A module that checks the diff when values are added, removed, or changed in an array.">
+  <meta property="og:url" content="https://naver.github.io/egjs-list-differ">
+  <meta property="og:image" content="https://naver.github.io/egjs-list-differ/images/logo.png">
+  <meta property="og:description"
+    content="A module that checks the diff when values are added, removed, or changed in an array.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title"
+    content="A module that checks the diff when values are added, removed, or changed in an array.">
+  <meta name="twitter:url" content="https://naver.github.io/egjs-list-differ">
+  <meta name="twitter:image" content="https://naver.github.io/egjs-list-differ/images/logo.png">
+  <meta name="twitter:description"
+    content="A module that checks the diff when values are added, removed, or changed in an array.">
+  <meta name="theme-color" content="#f5f5f5">
+  <title>A module that checks the diff when values are added, removed, or changed in an array.</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/styles/default.min.css">
+  <link rel="stylesheet" type="text/css" href="./index.css" />
+</head>
+
+<body>
+  <div class="page main">
+    <div class="container">
+      <h1><img src="./images/logo.png"></h1>
+      <p class="badges">
+        <a href="https://www.npmjs.com/package/@egjs/list-differ" target="_blank">
+          <img src="https://img.shields.io/npm/v/@egjs/list-differ.svg?style=flat-square&color=007acc&label=version"
+            alt="npm version" /></a>
+        <a href="https://github.com/naver/egjs-list-differ" target="_blank">
+          <img
+            src="https://img.shields.io/github/stars/naver/egjs-list-differ.svg?color=42b883&style=flat-square" /></a>
+        <a href="https://github.com/naver/egjs-list-differ" target="_blank">
+          <img src="https://img.shields.io/badge/language-typescript-blue.svg?style=flat-square" />
+        </a>
+        <a href="https://github.com/naver/egjs-list-differ/blob/master/LICENSE" target="_blank">
+          <img
+            src="https://img.shields.io/github/license/naver/egjs-list-differ.svg?style=flat-square&label=license&color=08CE5D" />
+        </a>
+        <a href="https://github.com/naver/egjs-children-differ/blob/master/packages/ngx-children-differ/README.md"
+          target="_blank"><img alt="Angular"
+            src="https://img.shields.io/static/v1.svg?label=&message=Angular&style=flat-square&logo=Angular&color=dd0031"></a>
+        <a href="https://github.com/naver/egjs-children-differ/blob/master/packages/react-children-differ/README.md"
+          target="_blank"><img alt="React"
+            src="https://img.shields.io/static/v1.svg?label=&message=React&style=flat-square&logo=React&logoColor=white&color=61dafb"></a>
+        <a href="https://github.com/naver/egjs-children-differ/blob/master/packages/vue-children-differ/README.md"
+          target="_blank"><img alt="Vue"
+            src="https://img.shields.io/static/v1.svg?label=&message=Vue&style=flat-square&logo=Vue.js&logoColor=white&color=42b883"></a>
+      </p>
+      <p class="description">A module that checks the diff when values are added, removed, or changed in an array.</p>
+      <div class="buttons">
+        <a href="https://github.com/naver/egjs-list-differ" target="_blank">Download</a>
+        <a href="https://github.com/naver/egjs-list-differ/release/latest/doc" target="_blank">API</a>
+      </div>
+      <div class="diff">
+        <h2>Find Diff</h2>
+        <p class="description">Compare the before and after lists to find a difference.(separate elements by space)</p>
+        <div class="before">
+          <div class="diff-header">
+            <span>Before List</span>
+            <button class="change"><img src="./images/change.png" /></button>
+          </div>
+          <textarea placeholder="input list">0 1 2 3 4 5 6 7 8</textarea>
+        </div>
+        <div class="after">
+          <div class="diff-header">
+            <span>After List</span>
+            <button class="change shuffle"><img src="./images/shuffle.png" /></button>
+          </div>
+          <textarea placeholder="input list">4 3 5 6 7 2 9</textarea>
+        </div>
+        <div class="buttons">
+          <button class="update">Update</button>
+        </div>
+        <div class="result">
+          <div class="diff-header">
+            <span>Result</span>
+          </div>
+          <p><span class="title">added</span>: <span class="added"></span></p>
+          <p><span class="title">removed</span>: <span class="removed"></span></p>
+          <p><a href="https://github.com/naver/egjs-list-differ#what-is-changed" target="_blank"><span
+                class="title">changed</span></a>: <span class="changed"></span></p>
+          <p><a href="https://github.com/naver/egjs-list-differ#what-is-changed" target="_blank"><span
+                class="title">pureChanged</span></a>: <span class="pure-changed"></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="page footer">
+    <div class="container">
+      <p>
+        <span class="egjs">
+          <a href="https://naver.github.io/egjs" target="_blank"><img
+              src="https://naver.github.io/egjs/img/logo.svg"><span class="eg">eg</span><span class="js">js</span></a>
+        </span>
+      </p>
+      <p class="license">This project is licensed under the MIT license.</p>
+      <p class="copy">© NAVER Corp.</p>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+  <script src="./release/latest/dist/list-differ.js"></script>
+  <script src="./index.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128864447-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'UA-70842526-25');
+  </script>
+</body>
+
+</html>
