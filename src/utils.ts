@@ -37,9 +37,6 @@ import Result from "./Result";
  * // An array of index pairs of `prevList` and `list` with different indexes from `prevList` and `list`
  * // [[0, 2], [4, 3], [3, 4], [2, 6], [1, 7]]
  * console.log(result.changed);
- * // The subset of `changed` and an array of index pairs that moved data directly. Indicate an array of absolute index pairs of `ordered`.(Formatted by: Array<[index of prevList, index of list]>)
- * // [[4, 3], [3, 4], [2, 6]]
- * console.log(result.pureChanged);
  * // An array of index pairs to be `ordered` that can synchronize `list` before adding data. (Formatted by: Array<[prevIndex, nextIndex]>)
  * // [[4, 1], [4, 2], [4, 3]]
  * console.log(result.ordered);
@@ -62,7 +59,6 @@ export function diff<T>(
   const prevKeyMap: MapInteface<any, number> = new mapClass();
   const keyMap: MapInteface<any, number> = new mapClass();
   const changedBeforeAdded: number[][] = [];
-  const fixed: boolean[] = [];
   const removedMap: object = {};
   let changed: number[][] = [];
   let addedCount = 0;
@@ -105,7 +101,6 @@ export function diff<T>(
         prevListIndex - removedCount,
         listIndex - addedCount,
       ]);
-      fixed.push(listIndex === prevListIndex);
       if (prevListIndex !== listIndex) {
         changed.push([prevListIndex, listIndex]);
       }
@@ -122,6 +117,5 @@ export function diff<T>(
     changed,
     maintained,
     changedBeforeAdded,
-    fixed,
   );
 }

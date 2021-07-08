@@ -3,46 +3,82 @@ egjs-list-differ
 Copyright (c) 2019-present NAVER Corp.
 MIT license
 */
-import Link from "./Link";
+function LIS(arr: number[]) {
+  if (arr.length === 0) {
+    return [];
+  }
 
-function orderChanged(changed: number[][], fixed: boolean[]) {
-  // It is roughly in the order of these examples.
-  // 4, 6, 0, 2, 1, 3, 5, 7
-  const fromLinks: Link[] = [];
-  // 0, 1, 2, 3, 4, 5, 6, 7
-  const toLinks: Link[] = [];
-
-  changed.forEach(([from, to]) => {
-    const link = new Link();
-
-    fromLinks[from] = link;
-    toLinks[to] = link;
-  });
-  // `fromLinks` are connected to each other by double linked list.
-  fromLinks.forEach((link, i) => {
-    link.connect(fromLinks[i - 1]);
+  const table: number[] = [];
+  const path: number[] = [];
+  arr.forEach((_, i) => {
+    table[i] = 1;
+    path[i] = -1;
   });
 
-  return changed.filter((_, i) => !fixed[i]).map(([from, to], i) => {
-    if (from === to) {
-      return [0, 0];
+  arr.forEach((_, i) => {
+    for (let j = i - 1; j > -1; j -= 1) {
+      if (table[j] + 1 > table[i] && arr[j] <= arr[i]) {
+        table[i] = table[j] + 1;
+        path[i] = j;
+      }
     }
-    const fromLink = fromLinks[from];
-    const toLink = toLinks[to - 1];
-    const fromIndex = fromLink.getIndex();
-
-    // Disconnect the link connected to `fromLink`.
-    fromLink.disconnect();
-
-    // Connect `fromLink` to the right of `toLink`.
-    if (!toLink) {
-      fromLink.connect(undefined, fromLinks[0]);
-    } else {
-      fromLink.connect(toLink, toLink.next);
-    }
-    const toIndex = fromLink.getIndex();
-    return [fromIndex, toIndex];
   });
+
+  let maxIndex = 0;
+  table.forEach((x, i) => {
+    if (x > table[maxIndex]) {
+      maxIndex = i;
+    }
+  });
+
+  const res: number[] = [];
+  while (maxIndex !== -1) {
+    res.push(arr[maxIndex]);
+    maxIndex = path[maxIndex];
+  }
+
+  return res.reverse();
+}
+
+function orderChanged(changedBeforeAdded: number[][]) {
+  const priorityList: number[] = [];
+  const confirmed: Record<number, boolean> = {};
+  const ordered: number[][] = [];
+  const length = changedBeforeAdded.length;
+
+  changedBeforeAdded.forEach(([from, to]) => {
+    priorityList[from] = to;
+  });
+  LIS(priorityList).forEach((x) => {
+    confirmed[x] = true;
+  });
+
+  for (let from = 0; from < length; from += 1) {
+    const fromValue = priorityList[from];
+    if (confirmed[fromValue]) {
+      continue;
+    }
+
+    let to = 0;
+    while (to < length) {
+      if (confirmed[priorityList[to]] && priorityList[to] > fromValue) {
+        break;
+      }
+      to += 1;
+    }
+    to < from && (to += 1);
+
+    confirmed[fromValue] = true;
+    ordered.push([from, to - 1]);
+    priorityList.splice(from, 1);
+    priorityList.splice(to - 1, 0, fromValue);
+
+    if (to > from) {
+      from -= 1;
+    }
+  }
+
+  return ordered;
 }
 
 export default class Result<T = any> {
@@ -53,10 +89,8 @@ export default class Result<T = any> {
   public changed: number[][];
   public maintained: number[][];
   private changedBeforeAdded: number[][];
-  private fixed: boolean[];
 
   private cacheOrdered: number[][];
-  private cachePureChanged: number[][];
   constructor(
     prevList: T[],
     list: T[],
@@ -64,8 +98,7 @@ export default class Result<T = any> {
     removed: number[],
     changed: number[][],
     maintained: number[][],
-    changedBeforeAdded: number[][],
-    fixed: boolean[],
+    changedBeforeAdded: number[][]
   ) {
     this.prevList = prevList;
     this.list = list;
@@ -74,7 +107,6 @@ export default class Result<T = any> {
     this.changed = changed;
     this.maintained = maintained;
     this.changedBeforeAdded = changedBeforeAdded;
-    this.fixed = fixed;
   }
   get ordered(): number[][] {
     if (!this.cacheOrdered) {
@@ -82,25 +114,8 @@ export default class Result<T = any> {
     }
     return this.cacheOrdered;
   }
-  get pureChanged(): number[][] {
-    if (!this.cachePureChanged) {
-      this.caculateOrdered();
-    }
-    return this.cachePureChanged;
-  }
   private caculateOrdered() {
-    const ordered = orderChanged(this.changedBeforeAdded, this.fixed);
-    const changed: number[][] = this.changed;
-    const pureChanged: number[][] = [];
-
-    this.cacheOrdered = ordered.filter(([from, to], i) => {
-      const [fromBefore, toBefore] = changed[i];
-
-      if (from !== to) {
-        pureChanged.push([fromBefore, toBefore]);
-        return true;
-      }
-    });
-    this.cachePureChanged = pureChanged;
+    const ordered = orderChanged(this.changedBeforeAdded);
+    this.cacheOrdered = ordered;
   }
 }
