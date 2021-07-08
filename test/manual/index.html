@@ -105,22 +105,6 @@
   <div class="diff">
     <div class="before">
       <div>
-        <div class="title">pureChanged:</div>
-      </div>
-      <div id="pureChanged"></div>
-    </div>
-  </div>
-  <div class="diff">
-    <div class="before">
-      <div>
-        <div class="title">pureChanged:</div>
-      </div>
-      <div id="pureChanged2" class="animated animated-changed"></div>
-    </div>
-  </div>
-  <div class="diff">
-    <div class="before">
-      <div>
         maintained + added:
       </div>
       <div id="maintained1" class="animated animated-maintained"></div>
@@ -141,7 +125,7 @@
 </div>
 </div>
 <script src="https://daybrush.com/scenejs/release/latest/dist/scene.min.js"></script>
-<script src="../../dist/list-differ.pkgd.js"></script>
+<script src="../../dist/list-differ.js"></script>
 <script>
   function a(title, description, className = "") {
     return `<div class="a ${className}"><span class="title">${title}</span><span class="description">${description}</span></div>`;
@@ -164,8 +148,6 @@
     allList.splice(index, 0, `<div class="added"><span class="added">${resultList[index]}</span></div>`);
   })
 
-  pureChanged2.innerHTML = a("prevList:", allList.join(""));
-
 
   prevList.innerHTML = a("prevList:", result.prevList);
   list.innerHTML = a("list:", resultList);
@@ -186,8 +168,6 @@
     el.innerHTML = a("prevList:", resultPrevList) + a("list:", resultList2);
   }
   change(changed, result.changed);
-  change(pureChanged, result.pureChanged);
-
 
 
   function order(el) {
@@ -230,22 +210,6 @@
   const size = 38.5;
 
   Scene.setAlias("left", ["transform", "translate"]);
-  const pureChangedScene = new Scene({
-    "#pureChanged2 .description>span": (i, el) => {
-      return {
-        0: {
-          "top": "0px",
-          "left": `${i * size}px`,
-          "background-color": "rgba(255, 255, 255, 0)",
-        },
-      };
-    },
-  }, {
-      selector: true,
-      delay: 0.5,
-      easing: "ease-in-out",
-      iterationCount: "infinite",
-    });
   const changedAfterAddedScene = new Scene({
     "#changedAfterAdded2 .description>span": (i, el) => {
       return {
@@ -263,10 +227,8 @@
       iterationCount: "infinite",
     });
 
-  const pureChangedItem = pureChangedScene.getItem("#pureChanged2 .description>span");
   const changedAfterAddedItem = changedAfterAddedScene.getItem("#changedAfterAdded2 .description>span");
 
-  const pureChangedIndexes = result.prevList.map((_, i) => i);
   const changedAfterAddedIndexes = result.prevList.map((_, i) => i);
   function removeScene(scene, item, indexes) {
     result.removed.forEach((index, depth) => {
@@ -396,11 +358,6 @@
     });
     scene.playCSS();
   }
-
-  removeScene(pureChangedScene, pureChangedItem, pureChangedIndexes);
-  orderScene(pureChangedScene, pureChangedItem, pureChangedIndexes, result.ordered);
-  addScene(pureChangedScene, pureChangedItem, pureChangedIndexes, "#pureChanged2 .description>.added");
-  completeScene(pureChangedScene, pureChangedItem, pureChangedIndexes);
 
 
 
