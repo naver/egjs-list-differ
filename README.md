@@ -40,13 +40,13 @@ import ListDiffer, { diff } from "@egjs/list-differ";
 // script => eg.ListDiffer
 // Value is key
 const differ = new ListDiffer([1, 2, 3, 4, 5, 6, 7], e => e);
-// const result = diff([1, 2, 3, 4, 5, 6, 7], [4, 3, 6, 2, 1, 7], e => e);
-const result = differ.update([4, 3, 6, 2, 1, 7]);
+// const result = diff([1, 2, 3, 4, 5, 6, 7], [4, 3, 8, 2, 1, 7], e => e);
+const result = differ.update([4, 3, 8, 2, 1, 7]);
 // List before update
 // [1, 2, 3, 4, 5, 6, 7]
 console.log(result.prevList);
 // Updated list
-// [4, 3, 6, 2, 1, 7]
+// [4, 3, 8, 2, 1, 7]
 console.log(result.list);
 // Index array of values added to `list`
 // [2]
@@ -57,11 +57,8 @@ console.log(result.removed);
 // An array of index pairs of `prevList` and `list` with different indexes from `prevList` and `list`
 // [[3, 0], [2, 1], [1, 3], [0, 4], [6, 5]]
 console.log(result.changed);
-// The subset of `changed` and an array of index pairs that moved data directly. Indicate an array of absolute index pairs of `ordered`.(Formatted by: Array<[index of prevList, index of list]>)
-// [[3, 0], [2, 1], [1, 3]]
-console.log(result.pureChanged);
 // An array of index pairs to be `ordered` that can synchronize `list` before adding data. (Formatted by: Array<[prevIndex, nextIndex]>)
-// [[3, 0], [3, 1], [3, 2]]
+// [[0, 3], [0, 2], [0, 1]]
 console.log(result.ordered);
 // An array of index pairs of `prevList` and `list` that have not been added/removed so data is preserved
 // [[3, 0], [2, 1], [1, 3], [0, 4], [6, 5]]
@@ -69,15 +66,13 @@ console.log(result.maintained);
 ```
 ### What is changed?
 * **changed**: An array of index pairs of `prevList` and `list` with different indexes from `prevList` and `list`
-* **pureChanged**: The subset of `changed` and an array of index pairs that moved data directly. Indicate an array of absolute index pairs of `ordered`.(Formatted by: Array<[index of prevList, index of list]>)
 
 
-||**changed**|**pureChanged:**|
-|---:|---|---|
+||**changed**|
+|---:|---|
 ||[[3, 0], [2, 1], [1, 3], [0, 4], [6, 5]]|[[[3, 0], [2, 1], [1, 3]]||
-|prevList|![prev_list](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/changed_prev_list.png) |![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/changed_before_prev_list.png)|
-|process|<p align="center">-</p>|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/changed_before_animation.gif)|
-|list|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/changed_list.png)|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/changed_before_list.png)|
+|prevList|![prev_list](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/changed_prev_list.png)|
+|list|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/changed_list.png)|
 
 ### What is ordered?
 An array of index pairs to be `ordered` that can synchronize `list` before adding data. (Formatted by: Array<[prevIndex, nextIndex]>)
@@ -86,7 +81,7 @@ An array of index pairs to be `ordered` that can synchronize `list` before addin
 |---:|---|
 |prevList|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/prev_list.png)|
 |removed<br/>[5, 4]|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/removed.png)|
-|ordered|[[3, 0], [3, 1], [3, 2]]|
+|ordered|[[0, 3], [0, 2], [0, 1]]|
 ||![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/ordered_before_added.gif)|
 |ordered[0]<br/>[3 => 0]| ![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/ordered_before_ordered0.png)|
 |ordered[1]<br/>[3 => 1]| ![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/ordered_before_ordered1.png)|
@@ -101,7 +96,7 @@ An array of index pairs to be `ordered` that can synchronize `list` before addin
 import ListDiffer, { diff } from "@egjs/list-differ";
 
 const prevList = [1, 2, 3, 4, 5, 6, 7];
-const list = [4, 3, 6, 2, 1, 7];
+const list = [4, 3, 8, 2, 1, 7];
 // const differ = new ListDiffer(prevList, e => e);
 // const result = differ.update(list);
 const result = diff(prevList, list, e => e);
@@ -122,8 +117,8 @@ result.removed.forEach(index => {
   nextList.splice(index, 1);
 });
 result.ordered.forEach(([from, to], i) => {
-  nextList.splice(from, 1);
-  nextList.splice(to, 0, list[result.pureChanged[i][1]]);
+  const element = nextList.splice(from, 1)[0];
+  nextList.splice(to, 0, element);
 });
 result.added.forEach(index => {
   nextList.splice(index, 0, list[index]);
@@ -148,8 +143,8 @@ result.added.forEach(index => {
 });
 ```
 
-### removed => maintaind => added
-||maintaind => added|
+### removed => maintained => added
+||maintained => added|
 |---|---|
 |prevList|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/prev_list.png)|
 |process|![](https://raw.githubusercontent.com/naver/egjs-list-differ/master/images/maintained_with_added.gif)|
