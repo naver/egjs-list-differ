@@ -3,7 +3,12 @@ egjs-list-differ
 Copyright (c) 2019-present NAVER Corp.
 MIT license
 */
-import { BeforeAddedIndex, Change, CurrentIndex, PrevIndex } from "./types";
+import {
+  AfterOrderIndex,
+  BeforeOrderIndex,
+  CurrentIndex,
+  PrevIndex,
+} from "./types";
 
 function LIS(arr: number[]) {
   if (arr.length === 0) {
@@ -43,14 +48,20 @@ function LIS(arr: number[]) {
 }
 
 function orderChanged(
-  changedBeforeAdded: [BeforeAddedIndex, BeforeAddedIndex][],
+  changedBeforeAdded: [BeforeOrderIndex, AfterOrderIndex][],
+  maintained: [PrevIndex, CurrentIndex][]
 ) {
   const priorityList: number[] = [];
   const confirmed: Record<number, boolean> = {};
-  const ordered: [BeforeAddedIndex, BeforeAddedIndex][] = [];
+  const ordered: [
+    PrevIndex,
+    CurrentIndex,
+    BeforeOrderIndex,
+    AfterOrderIndex
+  ][] = [];
   const length = changedBeforeAdded.length;
 
-  changedBeforeAdded.forEach(([from, to]) => {
+  changedBeforeAdded.forEach(([from, to], i) => {
     priorityList[from] = to;
   });
   LIS(priorityList).forEach((x) => {
@@ -73,7 +84,12 @@ function orderChanged(
     to < from && (to += 1);
 
     confirmed[fromValue] = true;
-    ordered.push([from, to - 1]);
+    ordered.push([
+      maintained[fromValue][0],
+      maintained[fromValue][1],
+      from,
+      to - 1,
+    ]);
     priorityList.splice(from, 1);
     priorityList.splice(to - 1, 0, fromValue);
 
@@ -81,7 +97,6 @@ function orderChanged(
       from -= 1;
     }
   }
-
   return ordered;
 }
 
@@ -92,9 +107,14 @@ export default class Result<T = any> {
   public removed: PrevIndex[];
   public changed: [PrevIndex, CurrentIndex][];
   public maintained: [PrevIndex, CurrentIndex][];
-  private changedBeforeAdded: [BeforeAddedIndex, BeforeAddedIndex][];
+  private changedBeforeAdded: [BeforeOrderIndex, AfterOrderIndex][];
 
-  private cacheOrdered: [BeforeAddedIndex, BeforeAddedIndex][];
+  private cacheOrdered: [
+    PrevIndex,
+    CurrentIndex,
+    BeforeOrderIndex,
+    AfterOrderIndex
+  ][];
   constructor(
     prevList: T[],
     list: T[],
@@ -102,7 +122,7 @@ export default class Result<T = any> {
     removed: PrevIndex[],
     changed: [PrevIndex, CurrentIndex][],
     maintained: [PrevIndex, CurrentIndex][],
-    changedBeforeAdded: [BeforeAddedIndex, BeforeAddedIndex][]
+    changedBeforeAdded: [BeforeOrderIndex, AfterOrderIndex][]
   ) {
     this.prevList = prevList;
     this.list = list;
@@ -113,7 +133,12 @@ export default class Result<T = any> {
     this.changedBeforeAdded = changedBeforeAdded;
   }
 
-  get ordered(): [BeforeAddedIndex, BeforeAddedIndex][] {
+  get ordered(): [
+    PrevIndex,
+    CurrentIndex,
+    BeforeOrderIndex,
+    AfterOrderIndex
+  ][] {
     if (!this.cacheOrdered) {
       this.caculateOrdered();
     }
@@ -121,7 +146,23 @@ export default class Result<T = any> {
   }
 
   private caculateOrdered() {
-    const ordered = orderChanged(this.changedBeforeAdded);
+    const ordered = orderChanged(this.changedBeforeAdded, this.maintained);
     this.cacheOrdered = ordered;
+  }
+
+  public forEachAdded(fn: (item: T, index: CurrentIndex) => void) {
+    this.added.forEach((x) => fn(this.list[x], x));
+  }
+
+  public forEachRemoved(fn: (item: T, index: PrevIndex) => void) {
+    this.removed.forEach((x) => fn(this.prevList[x], x));
+  }
+
+  public forEachOrdered(
+    fn: (item: T, from: BeforeOrderIndex, to: AfterOrderIndex) => void
+  ) {
+    this.ordered.forEach(([prevIndex, currentIndex, from, to]) =>
+      fn(this.list[currentIndex], from, to)
+    );
   }
 }

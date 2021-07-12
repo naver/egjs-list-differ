@@ -7,13 +7,14 @@ export interface MapInterface<T, U> {
   get(key: T): U | undefined;
   set(key: T, value: U): any;
 }
-export type MapConstructor<T, U> = new () => MapInterface <T, U>;
+export type MapConstructor<T, U> = new () => MapInterface<T, U>;
 export interface ListFormat<T = any> {
   [index: number]: T;
   length: number;
 }
 export type PrevIndex = number;
-export type BeforeAddedIndex = number;
+export type BeforeOrderIndex = number;
+export type AfterOrderIndex = number;
 export type CurrentIndex = number;
 /**
  * @typedef
@@ -32,10 +33,11 @@ export interface DiffResult<T> {
   added: CurrentIndex[];
   removed: PrevIndex[];
   changed: [PrevIndex, CurrentIndex][];
-  ordered: [BeforeAddedIndex, BeforeAddedIndex][];
+  ordered: [PrevIndex, CurrentIndex, BeforeOrderIndex, AfterOrderIndex][];
   maintained: [PrevIndex, CurrentIndex][];
-  forEachAdded: (fn: (change: Change<T>) => void) => void;
-  forEachRemoved: (fn: (change: Change<T>) => void) => void;
-  forEachOrdered: (fn: (change: Change<T>) => void) => void;
+  forEachAdded: (fn: (item: T, index: CurrentIndex) => void) => void;
+  forEachRemoved: (fn: (item: T, index: PrevIndex) => void) => void;
+  forEachOrdered: (
+    fn: (item: T, from: BeforeOrderIndex, to: AfterOrderIndex) => void
+  ) => void;
 }
-

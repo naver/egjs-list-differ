@@ -8,7 +8,8 @@ import HashMap from "./HashMap";
 import PolyMap from "./PolyMap";
 import Result from "./Result";
 import {
-  BeforeAddedIndex,
+  AfterOrderIndex,
+  BeforeOrderIndex,
   CurrentIndex,
   DiffResult,
   MapInterface,
@@ -68,8 +69,8 @@ export function diff<T>(
   const keys = list.map(callback);
   const prevKeyMap: MapInterface<unknown, PrevIndex> = new mapClass();
   const keyMap: MapInterface<unknown, CurrentIndex> = new mapClass();
-  const changedBeforeAdded: [BeforeAddedIndex, BeforeAddedIndex][] = [];
-  const changed: [BeforeAddedIndex, BeforeAddedIndex][] = [];
+  const changedBeforeAdded: [BeforeOrderIndex, AfterOrderIndex][] = [];
+  const changed: [BeforeOrderIndex, AfterOrderIndex][] = [];
   const removedMap: Record<PrevIndex, number> = {};
   let addedCount = 0;
   let removedCount = 0;
