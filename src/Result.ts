@@ -3,6 +3,8 @@ egjs-list-differ
 Copyright (c) 2019-present NAVER Corp.
 MIT license
 */
+import { BeforeAddedIndex, Change, CurrentIndex, PrevIndex } from "./types";
+
 function LIS(arr: number[]) {
   if (arr.length === 0) {
     return [];
@@ -40,10 +42,12 @@ function LIS(arr: number[]) {
   return res.reverse();
 }
 
-function orderChanged(changedBeforeAdded: number[][]) {
+function orderChanged(
+  changedBeforeAdded: [BeforeAddedIndex, BeforeAddedIndex][],
+) {
   const priorityList: number[] = [];
   const confirmed: Record<number, boolean> = {};
-  const ordered: number[][] = [];
+  const ordered: [BeforeAddedIndex, BeforeAddedIndex][] = [];
   const length = changedBeforeAdded.length;
 
   changedBeforeAdded.forEach(([from, to]) => {
@@ -84,21 +88,21 @@ function orderChanged(changedBeforeAdded: number[][]) {
 export default class Result<T = any> {
   public prevList: T[];
   public list: T[];
-  public added: number[];
-  public removed: number[];
-  public changed: number[][];
-  public maintained: number[][];
-  private changedBeforeAdded: number[][];
+  public added: CurrentIndex[];
+  public removed: PrevIndex[];
+  public changed: [PrevIndex, CurrentIndex][];
+  public maintained: [PrevIndex, CurrentIndex][];
+  private changedBeforeAdded: [BeforeAddedIndex, BeforeAddedIndex][];
 
-  private cacheOrdered: number[][];
+  private cacheOrdered: [BeforeAddedIndex, BeforeAddedIndex][];
   constructor(
     prevList: T[],
     list: T[],
-    added: number[],
-    removed: number[],
-    changed: number[][],
-    maintained: number[][],
-    changedBeforeAdded: number[][]
+    added: CurrentIndex[],
+    removed: PrevIndex[],
+    changed: [PrevIndex, CurrentIndex][],
+    maintained: [PrevIndex, CurrentIndex][],
+    changedBeforeAdded: [BeforeAddedIndex, BeforeAddedIndex][]
   ) {
     this.prevList = prevList;
     this.list = list;
@@ -108,12 +112,14 @@ export default class Result<T = any> {
     this.maintained = maintained;
     this.changedBeforeAdded = changedBeforeAdded;
   }
-  get ordered(): number[][] {
+
+  get ordered(): [BeforeAddedIndex, BeforeAddedIndex][] {
     if (!this.cacheOrdered) {
       this.caculateOrdered();
     }
     return this.cacheOrdered;
   }
+
   private caculateOrdered() {
     const ordered = orderChanged(this.changedBeforeAdded);
     this.cacheOrdered = ordered;

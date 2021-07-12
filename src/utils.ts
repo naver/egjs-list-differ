@@ -3,11 +3,17 @@ egjs-list-differ
 Copyright (c) 2019-present NAVER Corp.
 MIT license
 */
-import { MapInteface, DiffResult } from "./types";
-import PolyMap from "./PolyMap";
-import HashMap from "./HashMap";
 import { SUPPORT_MAP } from "./consts";
+import HashMap from "./HashMap";
+import PolyMap from "./PolyMap";
 import Result from "./Result";
+import {
+  BeforeAddedIndex,
+  CurrentIndex,
+  DiffResult,
+  MapInterface,
+  PrevIndex,
+} from "./types";
 
 /**
  *
@@ -47,20 +53,24 @@ import Result from "./Result";
 export function diff<T>(
   prevList: T[],
   list: T[],
-  findKeyCallback?: (e: T, i: number, arr: T[]) => any
+  findKeyCallback?: (e: T, i: number, arr: T[]) => unknown
 ): DiffResult<T> {
-  const mapClass: new () => MapInteface<any, number> = SUPPORT_MAP ? Map : (findKeyCallback ? HashMap : PolyMap);
+  const mapClass: new () => MapInterface<unknown, number> = SUPPORT_MAP
+    ? Map
+    : findKeyCallback
+    ? HashMap
+    : PolyMap;
   const callback = findKeyCallback || ((e: T) => e);
-  const added: number[] = [];
-  const removed: number[] = [];
-  const maintained: number[][] = [];
+  const added: CurrentIndex[] = [];
+  const removed: PrevIndex[] = [];
+  const maintained: [PrevIndex, CurrentIndex][] = [];
   const prevKeys = prevList.map(callback);
   const keys = list.map(callback);
-  const prevKeyMap: MapInteface<any, number> = new mapClass();
-  const keyMap: MapInteface<any, number> = new mapClass();
-  const changedBeforeAdded: number[][] = [];
-  const removedMap: object = {};
-  let changed: number[][] = [];
+  const prevKeyMap: MapInterface<unknown, PrevIndex> = new mapClass();
+  const keyMap: MapInterface<unknown, CurrentIndex> = new mapClass();
+  const changedBeforeAdded: [BeforeAddedIndex, BeforeAddedIndex][] = [];
+  const changed: [BeforeAddedIndex, BeforeAddedIndex][] = [];
+  const removedMap: Record<PrevIndex, number> = {};
   let addedCount = 0;
   let removedCount = 0;
 
@@ -116,6 +126,6 @@ export function diff<T>(
     removed,
     changed,
     maintained,
-    changedBeforeAdded,
+    changedBeforeAdded
   );
 }

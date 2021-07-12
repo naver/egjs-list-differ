@@ -3,15 +3,18 @@ egjs-list-differ
 Copyright (c) 2019-present NAVER Corp.
 MIT license
 */
-export interface MapInteface<T, U> {
+export interface MapInterface<T, U> {
   get(key: T): U | undefined;
   set(key: T, value: U): any;
 }
-export type MapConstructor<T, U> = new () => MapInteface <T, U>;
+export type MapConstructor<T, U> = new () => MapInterface <T, U>;
 export interface ListFormat<T = any> {
   [index: number]: T;
   length: number;
 }
+export type PrevIndex = number;
+export type BeforeAddedIndex = number;
+export type CurrentIndex = number;
 /**
  * @typedef
  * @memberof eg.ListDiffer
@@ -26,10 +29,13 @@ export interface ListFormat<T = any> {
 export interface DiffResult<T> {
   prevList: T[];
   list: T[];
-  added: number[];
-  removed: number[];
-  changed: number[][];
-  ordered: number[][];
-  maintained: number[][];
+  added: CurrentIndex[];
+  removed: PrevIndex[];
+  changed: [PrevIndex, CurrentIndex][];
+  ordered: [BeforeAddedIndex, BeforeAddedIndex][];
+  maintained: [PrevIndex, CurrentIndex][];
+  forEachAdded: (fn: (change: Change<T>) => void) => void;
+  forEachRemoved: (fn: (change: Change<T>) => void) => void;
+  forEachOrdered: (fn: (change: Change<T>) => void) => void;
 }
 
