@@ -16,6 +16,15 @@ export type PrevIndex = number;
 export type BeforeOrderIndex = number;
 export type AfterOrderIndex = number;
 export type CurrentIndex = number;
+export type Change = [PrevIndex, CurrentIndex];
+export type ChangeBeforeAdd = [BeforeOrderIndex, AfterOrderIndex];
+export type Order = [
+  BeforeOrderIndex,
+  AfterOrderIndex,
+  PrevIndex,
+  CurrentIndex
+];
+type IterMethod<T, U> = (fn: (item: T, index: U) => void) => void;
 /**
  * @typedef
  * @memberof eg.ListDiffer
@@ -32,12 +41,12 @@ export interface DiffResult<T> {
   list: T[];
   added: CurrentIndex[];
   removed: PrevIndex[];
-  changed: [PrevIndex, CurrentIndex][];
-  ordered: [PrevIndex, CurrentIndex, BeforeOrderIndex, AfterOrderIndex][];
-  maintained: [PrevIndex, CurrentIndex][];
-  forEachAdded: (fn: (item: T, index: CurrentIndex) => void) => void;
-  forEachRemoved: (fn: (item: T, index: PrevIndex) => void) => void;
-  forEachOrdered: (
-    fn: (item: T, from: BeforeOrderIndex, to: AfterOrderIndex) => void
-  ) => void;
+  changed: Change[];
+  ordered: Order[];
+  maintained: Change[];
+  forEachAdded: IterMethod<T, CurrentIndex>;
+  forEachRemoved: IterMethod<T, PrevIndex>;
+  forEachChanged: IterMethod<T, Change>;
+  forEachOrdered: IterMethod<T, Order>;
+  forEachMaintained: IterMethod<T, Change>;
 }

@@ -4,9 +4,10 @@ Copyright (c) 2019-present NAVER Corp.
 MIT license
 */
 import {
-  AfterOrderIndex,
-  BeforeOrderIndex,
+  Change,
+  ChangeBeforeAdd,
   CurrentIndex,
+  Order,
   PrevIndex,
 } from "./types";
 
@@ -48,20 +49,15 @@ function LIS(arr: number[]) {
 }
 
 function orderChanged(
-  changedBeforeAdded: [BeforeOrderIndex, AfterOrderIndex][],
-  maintained: [PrevIndex, CurrentIndex][]
+  changedBeforeAdded: ChangeBeforeAdd[],
+  maintained: Change[]
 ) {
   const priorityList: number[] = [];
   const confirmed: Record<number, boolean> = {};
-  const ordered: [
-    PrevIndex,
-    CurrentIndex,
-    BeforeOrderIndex,
-    AfterOrderIndex
-  ][] = [];
+  const ordered: Order[] = [];
   const length = changedBeforeAdded.length;
 
-  changedBeforeAdded.forEach(([from, to], i) => {
+  changedBeforeAdded.forEach(([from, to]) => {
     priorityList[from] = to;
   });
   LIS(priorityList).forEach((x) => {
@@ -85,10 +81,10 @@ function orderChanged(
 
     confirmed[fromValue] = true;
     ordered.push([
-      maintained[fromValue][0],
-      maintained[fromValue][1],
       from,
       to - 1,
+      maintained[fromValue][0],
+      maintained[fromValue][1],
     ]);
     priorityList.splice(from, 1);
     priorityList.splice(to - 1, 0, fromValue);
@@ -105,24 +101,19 @@ export default class Result<T = any> {
   public list: T[];
   public added: CurrentIndex[];
   public removed: PrevIndex[];
-  public changed: [PrevIndex, CurrentIndex][];
-  public maintained: [PrevIndex, CurrentIndex][];
-  private changedBeforeAdded: [BeforeOrderIndex, AfterOrderIndex][];
+  public changed: Change[];
+  public maintained: Change[];
+  private changedBeforeAdded: ChangeBeforeAdd[];
 
-  private cacheOrdered: [
-    PrevIndex,
-    CurrentIndex,
-    BeforeOrderIndex,
-    AfterOrderIndex
-  ][];
+  private cacheOrdered: Order[];
   constructor(
     prevList: T[],
     list: T[],
     added: CurrentIndex[],
     removed: PrevIndex[],
-    changed: [PrevIndex, CurrentIndex][],
-    maintained: [PrevIndex, CurrentIndex][],
-    changedBeforeAdded: [BeforeOrderIndex, AfterOrderIndex][]
+    changed: Change[],
+    maintained: Change[],
+    changedBeforeAdded: ChangeBeforeAdd[]
   ) {
     this.prevList = prevList;
     this.list = list;
@@ -133,12 +124,7 @@ export default class Result<T = any> {
     this.changedBeforeAdded = changedBeforeAdded;
   }
 
-  get ordered(): [
-    PrevIndex,
-    CurrentIndex,
-    BeforeOrderIndex,
-    AfterOrderIndex
-  ][] {
+  get ordered(): Order[] {
     if (!this.cacheOrdered) {
       this.caculateOrdered();
     }
@@ -151,18 +137,38 @@ export default class Result<T = any> {
   }
 
   public forEachAdded(fn: (item: T, index: CurrentIndex) => void) {
-    this.added.forEach((x) => fn(this.list[x], x));
+    this.added.forEach((currentIndex) =>
+      fn(this.list[currentIndex], currentIndex)
+    );
   }
 
   public forEachRemoved(fn: (item: T, index: PrevIndex) => void) {
-    this.removed.forEach((x) => fn(this.prevList[x], x));
+    this.removed.forEach((prevIndex) =>
+      fn(this.prevList[prevIndex], prevIndex)
+    );
   }
 
-  public forEachOrdered(
-    fn: (item: T, from: BeforeOrderIndex, to: AfterOrderIndex) => void
-  ) {
-    this.ordered.forEach(([prevIndex, currentIndex, from, to]) =>
-      fn(this.list[currentIndex], from, to)
+  public forEachChanged(fn: (item: T, change: Change) => void) {
+    this.changed.forEach(([prevIndex, currentIndex]) =>
+      fn(this.list[currentIndex], [prevIndex, currentIndex])
+    );
+  }
+
+  public forEachOrdered(fn: (item: T, order: Order) => void) {
+    this.ordered.forEach(
+      ([beforeOrderIndex, afterOrderIndex, prevIndex, currentIndex]) =>
+        fn(this.list[currentIndex], [
+          beforeOrderIndex,
+          afterOrderIndex,
+          prevIndex,
+          currentIndex,
+        ])
+    );
+  }
+
+  public forEachMaintained(fn: (item: T, change: Change) => void) {
+    this.maintained.forEach(([prevIndex, currentIndex]) =>
+      fn(this.list[currentIndex], [prevIndex, currentIndex])
     );
   }
 }
