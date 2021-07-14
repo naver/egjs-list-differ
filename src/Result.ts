@@ -7,6 +7,7 @@ import {
   Change,
   ChangeBeforeAdd,
   CurrentIndex,
+  ElementOrder,
   Order,
   PrevIndex,
 } from "./types";
@@ -48,13 +49,15 @@ function LIS(arr: number[]) {
   return res.reverse();
 }
 
-function orderChanged(
+function orderChanged<T>(
   changedBeforeAdded: ChangeBeforeAdd[],
-  maintained: Change[]
+  maintained: Change[],
+  list: T[]
 ) {
   const priorityList: number[] = [];
   const confirmed: Record<number, boolean> = {};
   const ordered: Order[] = [];
+  const elementOrdered: ElementOrder<T>[] = [];
   const length = changedBeforeAdded.length;
 
   changedBeforeAdded.forEach(([from, to]) => {
@@ -80,11 +83,10 @@ function orderChanged(
     to < from && (to += 1);
 
     confirmed[fromValue] = true;
-    ordered.push([
-      from,
-      to - 1,
-      maintained[fromValue][0],
-      maintained[fromValue][1],
+    ordered.push([from, to - 1]);
+    elementOrdered.push([
+      list[maintained[fromValue][1]],
+      to < length ? list[maintained[priorityList[to]][1]] : null,
     ]);
     priorityList.splice(from, 1);
     priorityList.splice(to - 1, 0, fromValue);
@@ -93,7 +95,7 @@ function orderChanged(
       from -= 1;
     }
   }
-  return ordered;
+  return { ordered, elementOrdered };
 }
 
 export default class Result<T = any> {
@@ -106,6 +108,7 @@ export default class Result<T = any> {
   private changedBeforeAdded: ChangeBeforeAdd[];
 
   private cacheOrdered: Order[];
+  private cacheElementOrdered: ElementOrder<T>[];
   constructor(
     prevList: T[],
     list: T[],
@@ -131,9 +134,21 @@ export default class Result<T = any> {
     return this.cacheOrdered;
   }
 
+  private get elementOrdered(): ElementOrder<T>[] {
+    if (!this.cacheElementOrdered) {
+      this.caculateOrdered();
+    }
+    return this.cacheElementOrdered;
+  }
+
   private caculateOrdered() {
-    const ordered = orderChanged(this.changedBeforeAdded, this.maintained);
+    const { ordered, elementOrdered } = orderChanged(
+      this.changedBeforeAdded,
+      this.maintained,
+      this.list
+    );
     this.cacheOrdered = ordered;
+    this.cacheElementOrdered = elementOrdered;
   }
 
   public forEachAdded(fn: (item: T, index: CurrentIndex) => void) {
@@ -155,14 +170,14 @@ export default class Result<T = any> {
   }
 
   public forEachOrdered(fn: (item: T, order: Order) => void) {
-    this.ordered.forEach(
-      ([beforeOrderIndex, afterOrderIndex, prevIndex, currentIndex]) =>
-        fn(this.list[currentIndex], [
-          beforeOrderIndex,
-          afterOrderIndex,
-          prevIndex,
-          currentIndex,
-        ])
+    this.ordered.forEach(([beforeOrderIndex, afterOrderIndex], i) =>
+      fn(this.elementOrdered[i][0], [beforeOrderIndex, afterOrderIndex])
+    );
+  }
+
+  public forEachElementOrdered(fn: (item: T, insertBefore: T | null) => void) {
+    this.elementOrdered.forEach(([item, insertBefore]) =>
+      fn(item, insertBefore)
     );
   }
 

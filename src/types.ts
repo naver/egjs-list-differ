@@ -18,12 +18,8 @@ export type AfterOrderIndex = number;
 export type CurrentIndex = number;
 export type Change = [PrevIndex, CurrentIndex];
 export type ChangeBeforeAdd = [BeforeOrderIndex, AfterOrderIndex];
-export type Order = [
-  BeforeOrderIndex,
-  AfterOrderIndex,
-  PrevIndex,
-  CurrentIndex
-];
+export type Order = [BeforeOrderIndex, AfterOrderIndex];
+export type ElementOrder<T> = [T, T | null];
 type IterMethod<T, U> = (fn: (item: T, index: U) => void) => void;
 /**
  * @typedef
@@ -48,5 +44,6 @@ export interface DiffResult<T> {
   forEachRemoved: IterMethod<T, PrevIndex>;
   forEachChanged: IterMethod<T, Change>;
   forEachOrdered: IterMethod<T, Order>;
+  forEachElementOrdered: IterMethod<T, T | null>;
   forEachMaintained: IterMethod<T, Change>;
 }
