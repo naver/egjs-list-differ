@@ -44,6 +44,7 @@ export interface DiffResult<T> {
   ordered: Order[];
   maintained: Change[];
   forEachAdded: EachMethod<T, CurrentIndex>;
+  forEachAddedRight: EachMethod<T, CurrentIndex>;
   forEachRemoved: EachMethod<T, PrevIndex>;
   forEachChanged: EachMethod<T, Change>;
   forEachOrdered: EachMethod<T, Order>;

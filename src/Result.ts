@@ -138,6 +138,13 @@ export default class Result<T = any> {
     );
   }
 
+  public forEachAddedRight(fn: (item: T, index: CurrentIndex) => void) {
+    this.added.forEach((_, i) => {
+      const currentIndex = this.added[this.added.length - 1 - i];
+      fn(this.list[currentIndex], currentIndex)
+    });
+  }
+
   public forEachRemoved(fn: (item: T, index: PrevIndex) => void) {
     this.removed.forEach((prevIndex) =>
       fn(this.prevList[prevIndex], prevIndex)
