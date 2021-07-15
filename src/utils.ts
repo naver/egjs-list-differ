@@ -8,8 +8,8 @@ import HashMap from "./HashMap";
 import PolyMap from "./PolyMap";
 import Result from "./Result";
 import {
+  AfterOrderIndex,
   Change,
-  ChangeBeforeAdd,
   CurrentIndex,
   DiffResult,
   MapInterface,
@@ -69,7 +69,7 @@ export function diff<T>(
   const keys = list.map(callback);
   const prevKeyMap: MapInterface<unknown, PrevIndex> = new mapClass();
   const keyMap: MapInterface<unknown, CurrentIndex> = new mapClass();
-  const changedBeforeAdded: ChangeBeforeAdd[] = [];
+  const orderPriority: AfterOrderIndex[] = [];
   const changed: Change[] = [];
   const removedMap: Record<PrevIndex, number> = {};
   let addedCount = 0;
@@ -108,10 +108,7 @@ export function diff<T>(
       maintained.push([prevListIndex, listIndex]);
       removedCount = removedMap[listIndex] || 0;
 
-      changedBeforeAdded.push([
-        prevListIndex - removedCount,
-        listIndex - addedCount,
-      ]);
+      orderPriority[prevListIndex - removedCount] = listIndex - addedCount;
       if (prevListIndex !== listIndex) {
         changed.push([prevListIndex, listIndex]);
       }
@@ -127,6 +124,6 @@ export function diff<T>(
     removed,
     changed,
     maintained,
-    changedBeforeAdded
+    orderPriority
   );
 }

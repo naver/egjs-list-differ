@@ -5,7 +5,7 @@ MIT license
 */
 export default class HashMap<T> {
   private object = {};
-  public get(key: number | string): T {
+  public get(key: number | string): T | undefined {
     return this.object[key];
   }
   public set(key: number | string, value: T) {
