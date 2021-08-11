@@ -21,9 +21,10 @@ export type Order = [
   BeforeOrderIndex, // from
   AfterOrderIndex, // to
   PrevIndex, // index in prevList, to reference item
+  CurrentIndex, // index in list, to reference item
   CurrentIndex // anchor index in list, target to insert **before** anchor
 ];
-type EachMethod<T, U> = (fn: (item: T, index: U) => void) => void;
+type EachMethod<T> = (fn: (record: T) => void) => void;
 /**
  * @typedef
  * @memberof eg.ListDiffer
@@ -43,10 +44,25 @@ export interface DiffResult<T> {
   changed: Change[];
   ordered: Order[];
   maintained: Change[];
-  forEachAdded: EachMethod<T, CurrentIndex>;
-  forEachAddedRight: EachMethod<T, CurrentIndex>;
-  forEachRemoved: EachMethod<T, PrevIndex>;
-  forEachChanged: EachMethod<T, Change>;
-  forEachOrdered: EachMethod<T, Order>;
-  forEachMaintained: EachMethod<T, Change>;
+  forEachAdded: EachMethod<{ item: T; currentIndex: CurrentIndex }>;
+  forEachAddedRight: EachMethod<{ item: T; currentIndex: CurrentIndex }>;
+  forEachRemoved: EachMethod<{ item: T; prevIndex: PrevIndex }>;
+  forEachChanged: EachMethod<{
+    item: T;
+    prevIndex: PrevIndex;
+    currentIndex: CurrentIndex;
+  }>;
+  forEachOrdered: EachMethod<{
+    item: T;
+    anchor: T;
+    prevIndex: PrevIndex;
+    currentIndex: CurrentIndex;
+    beforeOrderIndex: BeforeOrderIndex;
+    afterOrderIndex: AfterOrderIndex;
+  }>;
+  forEachMaintained: EachMethod<{
+    item: T;
+    prevIndex: PrevIndex;
+    currentIndex: CurrentIndex;
+  }>;
 }

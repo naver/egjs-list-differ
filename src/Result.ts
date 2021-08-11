@@ -5,6 +5,7 @@ MIT license
 */
 import {
   AfterOrderIndex,
+  BeforeOrderIndex,
   Change,
   CurrentIndex,
   Order,
@@ -77,6 +78,7 @@ function orderChanged(priorityList: AfterOrderIndex[], maintained: Change[]) {
       from,
       to - 1,
       maintained[priority][0],
+      maintained[priority][1],
       to < length ? maintained[priorityList[to]][1] : -1,
     ]);
     priorityList.splice(from, 1);
@@ -91,8 +93,6 @@ function orderChanged(priorityList: AfterOrderIndex[], maintained: Change[]) {
 
 export default class Result<T = any> {
   public prevList: T[];
-  public beforeOrderList: T[];
-  public afterOrderList: T[];
   public list: T[];
   public added: CurrentIndex[];
   public removed: PrevIndex[];
@@ -132,40 +132,116 @@ export default class Result<T = any> {
     this.cacheOrdered = ordered;
   }
 
-  public forEachAdded(fn: (item: T, index: CurrentIndex) => void) {
+  public forEachAdded(
+    fn: (record: { item: T; currentIndex: CurrentIndex }) => void
+  ) {
     this.added.forEach((currentIndex) =>
-      fn(this.list[currentIndex], currentIndex)
+      fn({
+        item: this.list[currentIndex],
+        currentIndex,
+      })
     );
   }
 
-  public forEachAddedRight(fn: (item: T, index: CurrentIndex) => void) {
+  public forEachAddedRight(
+    fn: (record: { item: T; currentIndex: CurrentIndex }) => void
+  ) {
     this.added.forEach((_, i) => {
       const currentIndex = this.added[this.added.length - 1 - i];
-      fn(this.list[currentIndex], currentIndex)
+      fn({
+        item: this.list[currentIndex],
+        currentIndex,
+      });
     });
   }
 
-  public forEachRemoved(fn: (item: T, index: PrevIndex) => void) {
+  public forEachRemoved(
+    fn: (record: { item: T; prevIndex: PrevIndex }) => void
+  ) {
     this.removed.forEach((prevIndex) =>
-      fn(this.prevList[prevIndex], prevIndex)
+      fn({
+        item: this.prevList[prevIndex],
+        prevIndex,
+      })
     );
   }
 
-  public forEachChanged(fn: (item: T, change: Change) => void) {
+  public forEachChanged(
+    fn: (record: {
+      item: T;
+      prevIndex: PrevIndex;
+      currentIndex: CurrentIndex;
+    }) => void
+  ) {
     this.changed.forEach(([prevIndex, currentIndex]) =>
-      fn(this.list[currentIndex], [prevIndex, currentIndex])
+      fn({
+        item: this.list[currentIndex],
+        prevIndex,
+        currentIndex,
+      })
     );
   }
 
-  public forEachOrdered(fn: (item: T, order: Order) => void) {
-    this.ordered.forEach(([from, to, prevIndex, anchor]) =>
-      fn(this.prevList[prevIndex], [from, to, prevIndex, anchor])
+  public forEachOrdered(
+    fn: (record: {
+      item: T;
+      anchor: T;
+      prevIndex: PrevIndex;
+      currentIndex: CurrentIndex;
+      beforeOrderIndex: BeforeOrderIndex;
+      afterOrderIndex: AfterOrderIndex;
+    }) => void
+  ) {
+    this.ordered.forEach(
+      ([
+        beforeOrderIndex,
+        afterOrderIndex,
+        prevIndex,
+        currentIndex,
+        anchorIndex,
+      ]) =>
+        fn({
+          item: this.prevList[prevIndex],
+          anchor: this.list[anchorIndex],
+          prevIndex,
+          currentIndex,
+          beforeOrderIndex,
+          afterOrderIndex,
+        })
     );
   }
 
-  public forEachMaintained(fn: (item: T, change: Change) => void) {
+  public forEachMaintained(
+    fn: (record: {
+      item: T;
+      prevIndex: PrevIndex;
+      currentIndex: CurrentIndex;
+    }) => void
+  ) {
     this.maintained.forEach(([prevIndex, currentIndex]) =>
-      fn(this.list[currentIndex], [prevIndex, currentIndex])
+      fn({
+        item: this.list[currentIndex],
+        prevIndex,
+        currentIndex,
+      })
     );
+  }
+
+  public forEachMaintainedRight(
+    fn: (record: {
+      item: T;
+      prevIndex: PrevIndex;
+      currentIndex: CurrentIndex;
+    }) => void
+  ) {
+    this.maintained.forEach((_, i) => {
+      const [prevIndex, currentIndex] =
+        this.maintained[this.maintained.length - 1 - i];
+      fn({
+        item: this.list[currentIndex],
+        prevIndex,
+        currentIndex,
+      });
+    });
   }
 }
