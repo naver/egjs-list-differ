@@ -12,6 +12,14 @@ import {
   PrevIndex,
 } from "./types";
 
+/**
+ * Find a subsequence of a given sequence in which the subsequence's elements are in increasing order,
+ * and in which the subsequence is as long as possible.
+ * @returns Longest increasing subsequence of input array
+ * @example
+ * LIS([1, 8, 2, 3]) === [1, 2, 3]
+ * LIS([5, 4, 3, 1, 2]) === [1, 2]
+ */
 function LIS(arr: number[]) {
   if (arr.length === 0) {
     return [];
