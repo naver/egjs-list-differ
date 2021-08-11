@@ -141,34 +141,34 @@ export default class Result<T = any> {
   }
 
   public forEachAdded(
-    fn: (record: { item: T; currentIndex: CurrentIndex }) => void
+    fn: (record: { currentItem: T; currentIndex: CurrentIndex }) => void
   ) {
     this.added.forEach((currentIndex) =>
       fn({
-        item: this.list[currentIndex],
+        currentItem: this.list[currentIndex],
         currentIndex,
       })
     );
   }
 
   public forEachAddedRight(
-    fn: (record: { item: T; currentIndex: CurrentIndex }) => void
+    fn: (record: { currentItem: T; currentIndex: CurrentIndex }) => void
   ) {
     this.added.forEach((_, i) => {
       const currentIndex = this.added[this.added.length - 1 - i];
       fn({
-        item: this.list[currentIndex],
+        currentItem: this.list[currentIndex],
         currentIndex,
       });
     });
   }
 
   public forEachRemoved(
-    fn: (record: { item: T; prevIndex: PrevIndex }) => void
+    fn: (record: { prevItem: T; prevIndex: PrevIndex }) => void
   ) {
     this.removed.forEach((prevIndex) =>
       fn({
-        item: this.prevList[prevIndex],
+        prevItem: this.prevList[prevIndex],
         prevIndex,
       })
     );
@@ -176,14 +176,16 @@ export default class Result<T = any> {
 
   public forEachChanged(
     fn: (record: {
-      item: T;
+      prevItem: T;
+      currentItem: T;
       prevIndex: PrevIndex;
       currentIndex: CurrentIndex;
     }) => void
   ) {
     this.changed.forEach(([prevIndex, currentIndex]) =>
       fn({
-        item: this.list[currentIndex],
+        prevItem: this.prevList[prevIndex],
+        currentItem: this.list[currentIndex],
         prevIndex,
         currentIndex,
       })
@@ -192,12 +194,14 @@ export default class Result<T = any> {
 
   public forEachOrdered(
     fn: (record: {
-      item: T;
+      prevItem: T;
+      currentItem: T;
       anchor: T;
       prevIndex: PrevIndex;
       currentIndex: CurrentIndex;
       beforeOrderIndex: BeforeOrderIndex;
       afterOrderIndex: AfterOrderIndex;
+      anchorIndex: CurrentIndex;
     }) => void
   ) {
     this.ordered.forEach(
@@ -209,26 +213,30 @@ export default class Result<T = any> {
         anchorIndex,
       ]) =>
         fn({
-          item: this.prevList[prevIndex],
+          prevItem: this.prevList[prevIndex],
+          currentItem: this.list[currentIndex],
           anchor: this.list[anchorIndex],
           prevIndex,
           currentIndex,
           beforeOrderIndex,
           afterOrderIndex,
+          anchorIndex,
         })
     );
   }
 
   public forEachMaintained(
     fn: (record: {
-      item: T;
+      prevItem: T;
+      currentItem: T;
       prevIndex: PrevIndex;
       currentIndex: CurrentIndex;
     }) => void
   ) {
     this.maintained.forEach(([prevIndex, currentIndex]) =>
       fn({
-        item: this.list[currentIndex],
+        prevItem: this.list[currentIndex],
+        currentItem: this.list[currentIndex],
         prevIndex,
         currentIndex,
       })
@@ -237,7 +245,8 @@ export default class Result<T = any> {
 
   public forEachMaintainedRight(
     fn: (record: {
-      item: T;
+      prevItem: T;
+      currentItem: T;
       prevIndex: PrevIndex;
       currentIndex: CurrentIndex;
     }) => void
@@ -246,7 +255,8 @@ export default class Result<T = any> {
       const [prevIndex, currentIndex] =
         this.maintained[this.maintained.length - 1 - i];
       fn({
-        item: this.list[currentIndex],
+        prevItem: this.list[currentIndex],
+        currentItem: this.list[currentIndex],
         prevIndex,
         currentIndex,
       });

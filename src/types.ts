@@ -44,24 +44,28 @@ export interface DiffResult<T> {
   changed: Change[];
   ordered: Order[];
   maintained: Change[];
-  forEachAdded: EachMethod<{ item: T; currentIndex: CurrentIndex }>;
-  forEachAddedRight: EachMethod<{ item: T; currentIndex: CurrentIndex }>;
-  forEachRemoved: EachMethod<{ item: T; prevIndex: PrevIndex }>;
+  forEachAdded: EachMethod<{ currentItem: T; currentIndex: CurrentIndex }>;
+  forEachAddedRight: EachMethod<{ currentItem: T; currentIndex: CurrentIndex }>;
+  forEachRemoved: EachMethod<{ prevItem: T; prevIndex: PrevIndex }>;
   forEachChanged: EachMethod<{
-    item: T;
+    prevItem: T;
+    currentItem: T;
     prevIndex: PrevIndex;
     currentIndex: CurrentIndex;
   }>;
   forEachOrdered: EachMethod<{
-    item: T;
+    prevItem: T;
+    currentItem: T;
     anchor: T;
     prevIndex: PrevIndex;
     currentIndex: CurrentIndex;
     beforeOrderIndex: BeforeOrderIndex;
     afterOrderIndex: AfterOrderIndex;
+    anchorIndex: CurrentIndex;
   }>;
   forEachMaintained: EachMethod<{
-    item: T;
+    prevItem: T;
+    currentItem: T;
     prevIndex: PrevIndex;
     currentIndex: CurrentIndex;
   }>;
