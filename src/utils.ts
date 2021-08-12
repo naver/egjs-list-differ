@@ -8,12 +8,11 @@ import HashMap from "./HashMap";
 import PolyMap from "./PolyMap";
 import Result from "./Result";
 import {
-  AfterOrderIndex,
-  Change,
-  CurrentIndex,
+  ChangedRecord,
+  CurrentRecord,
   DiffResult,
   MapInterface,
-  PrevIndex,
+  PrevRecord,
 } from "./types";
 
 /**
@@ -62,55 +61,73 @@ export function diff<T>(
     ? HashMap
     : PolyMap;
   const callback = findKeyCallback || ((e: T) => e);
-  const added: CurrentIndex[] = [];
-  const removed: PrevIndex[] = [];
-  const maintained: Change[] = [];
+  const added: CurrentRecord<T>[] = [];
+  const removed: PrevRecord<T>[] = [];
+  const maintained: ChangedRecord<T>[] = [];
+  const changed: ChangedRecord<T>[] = [];
   const prevKeys = prevList.map(callback);
   const keys = list.map(callback);
-  const prevKeyMap: MapInterface<unknown, PrevIndex> = new mapClass();
-  const keyMap: MapInterface<unknown, CurrentIndex> = new mapClass();
-  const orderPriority: AfterOrderIndex[] = [];
-  const changed: Change[] = [];
-  const removedMap: Record<PrevIndex, number> = {};
+  const prevKeyMap: MapInterface<unknown, number> = new mapClass();
+  const keyMap: MapInterface<unknown, number> = new mapClass();
+  const removedMap: Record<number, number> = {};
+  const orderPriority: number[] = [];
   let addedCount = 0;
   let removedCount = 0;
 
   // Add prevKeys and keys to the hashmap.
-  prevKeys.forEach((key, prevListIndex) => {
-    prevKeyMap.set(key, prevListIndex);
+  prevKeys.forEach((key, prevIndex) => {
+    prevKeyMap.set(key, prevIndex);
   });
   keys.forEach((key, listIndex) => {
     keyMap.set(key, listIndex);
   });
 
   // Compare `prevKeys` and `keys` and add them to `removed` if they are not in `keys`.
-  prevKeys.forEach((key, prevListIndex) => {
+  prevKeys.forEach((key, prevIndex) => {
     const listIndex = keyMap.get(key);
 
     // In prevList, but not in list, it is removed.
     if (typeof listIndex === "undefined") {
       ++removedCount;
-      removed.push(prevListIndex);
+      removed.push({
+        prevItem: prevList[prevIndex],
+        prevIndex,
+      });
     } else {
       removedMap[listIndex] = removedCount;
     }
   });
 
   // Compare `prevKeys` and `keys` and add them to `added` if they are not in `prevKeys`.
-  keys.forEach((key, listIndex) => {
-    const prevListIndex = prevKeyMap.get(key);
+  keys.forEach((key, currentIndex) => {
+    const prevIndex = prevKeyMap.get(key);
+    const currentItem = list[currentIndex];
 
     // In list, but not in prevList, it is added.
-    if (typeof prevListIndex === "undefined") {
-      added.push(listIndex);
+    if (typeof prevIndex === "undefined") {
+      added.push({
+        currentItem,
+        currentIndex,
+      });
       ++addedCount;
     } else {
-      maintained.push([prevListIndex, listIndex]);
-      removedCount = removedMap[listIndex] || 0;
+      const prevItem = prevList[prevIndex];
+      maintained.push({
+        prevItem,
+        currentItem,
+        prevIndex,
+        currentIndex,
+      });
+      removedCount = removedMap[currentIndex] || 0;
 
-      orderPriority[prevListIndex - removedCount] = listIndex - addedCount;
-      if (prevListIndex !== listIndex) {
-        changed.push([prevListIndex, listIndex]);
+      orderPriority[prevIndex - removedCount] = currentIndex - addedCount;
+      if (prevIndex !== currentIndex) {
+        changed.push({
+          prevItem,
+          currentItem,
+          prevIndex,
+          currentIndex,
+        });
       }
     }
   });

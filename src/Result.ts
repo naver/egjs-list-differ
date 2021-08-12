@@ -4,12 +4,10 @@ Copyright (c) 2019-present NAVER Corp.
 MIT license
 */
 import {
-  AfterOrderIndex,
-  BeforeOrderIndex,
-  Change,
-  CurrentIndex,
-  Order,
-  PrevIndex,
+  ChangedRecord,
+  CurrentRecord,
+  OrderedRecord,
+  PrevRecord,
 } from "./types";
 
 /**
@@ -57,9 +55,9 @@ function LIS(arr: number[]) {
   return res.reverse();
 }
 
-function orderChanged(priorityList: AfterOrderIndex[], maintained: Change[]) {
+function orderChanged<T>(priorityList: number[], maintained: ChangedRecord<T>[]) {
   const confirmed: Record<number, boolean> = {};
-  const ordered: Order[] = [];
+  const ordered: OrderedRecord<T>[] = [];
   const length = priorityList.length;
 
   LIS(priorityList).forEach((x) => {
@@ -82,13 +80,16 @@ function orderChanged(priorityList: AfterOrderIndex[], maintained: Change[]) {
     to < from && (to += 1);
 
     confirmed[priority] = true;
-    ordered.push([
-      from,
-      to - 1,
-      maintained[priority][0],
-      maintained[priority][1],
-      to < length ? maintained[priorityList[to]][1] : -1,
-    ]);
+
+    const record = maintained[priority];
+    const anchorRecord = to < length ? maintained[priorityList[to]] : null;
+    ordered.push({
+      beforeOrderIndex: from,
+      afterOrderIndex: to - 1,
+      ...record,
+      anchorIndex: anchorRecord ? anchorRecord.currentIndex : -1,
+      anchor: anchorRecord ? anchorRecord.currentItem : null,
+    });
     priorityList.splice(from, 1);
     priorityList.splice(to - 1, 0, priority);
 
@@ -102,22 +103,22 @@ function orderChanged(priorityList: AfterOrderIndex[], maintained: Change[]) {
 export default class Result<T = any> {
   public prevList: T[];
   public list: T[];
-  public added: CurrentIndex[];
-  public removed: PrevIndex[];
-  public changed: Change[];
-  public maintained: Change[];
+  public added: CurrentRecord<T>[];
+  public removed: PrevRecord<T>[];
+  public changed: ChangedRecord<T>[];
+  public maintained: ChangedRecord<T>[];
 
-  private orderPriority: AfterOrderIndex[];
-  private cacheOrdered: Order[];
+  private orderPriority: number[];
+  private cacheOrdered: OrderedRecord<T>[];
 
   constructor(
     prevList: T[],
     list: T[],
-    added: CurrentIndex[],
-    removed: PrevIndex[],
-    changed: Change[],
-    maintained: Change[],
-    orderPriority: AfterOrderIndex[]
+    added: CurrentRecord<T>[],
+    removed: PrevRecord<T>[],
+    changed: ChangedRecord<T>[],
+    maintained: ChangedRecord<T>[],
+    orderPriority: number[]
   ) {
     this.prevList = prevList;
     this.list = list;
@@ -128,7 +129,7 @@ export default class Result<T = any> {
     this.orderPriority = orderPriority;
   }
 
-  get ordered(): Order[] {
+  get ordered(): OrderedRecord<T>[] {
     if (!this.cacheOrdered) {
       this.caculateOrdered();
     }
@@ -140,126 +141,37 @@ export default class Result<T = any> {
     this.cacheOrdered = ordered;
   }
 
-  public forEachAdded(
-    fn: (record: { currentItem: T; currentIndex: CurrentIndex }) => void
-  ) {
-    this.added.forEach((currentIndex) =>
-      fn({
-        currentItem: this.list[currentIndex],
-        currentIndex,
-      })
-    );
+  public forEachAdded(fn: (record: CurrentRecord<T>) => void) {
+    this.added.forEach((record) => fn(record));
   }
 
-  public forEachAddedRight(
-    fn: (record: { currentItem: T; currentIndex: CurrentIndex }) => void
-  ) {
+  public forEachAddedRight(fn: (record: CurrentRecord<T>) => void) {
     this.added.forEach((_, i) => {
-      const currentIndex = this.added[this.added.length - 1 - i];
-      fn({
-        currentItem: this.list[currentIndex],
-        currentIndex,
-      });
+      const record = this.added[this.added.length - 1 - i];
+      fn(record);
     });
   }
 
-  public forEachRemoved(
-    fn: (record: { prevItem: T; prevIndex: PrevIndex }) => void
-  ) {
-    this.removed.forEach((prevIndex) =>
-      fn({
-        prevItem: this.prevList[prevIndex],
-        prevIndex,
-      })
-    );
+  public forEachRemoved(fn: (record: PrevRecord<T>) => void) {
+    this.removed.forEach((record) => fn(record));
   }
 
-  public forEachChanged(
-    fn: (record: {
-      prevItem: T;
-      currentItem: T;
-      prevIndex: PrevIndex;
-      currentIndex: CurrentIndex;
-    }) => void
-  ) {
-    this.changed.forEach(([prevIndex, currentIndex]) =>
-      fn({
-        prevItem: this.prevList[prevIndex],
-        currentItem: this.list[currentIndex],
-        prevIndex,
-        currentIndex,
-      })
-    );
+  public forEachChanged(fn: (record: ChangedRecord<T>) => void) {
+    this.changed.forEach((record) => fn(record));
   }
 
-  public forEachOrdered(
-    fn: (record: {
-      prevItem: T;
-      currentItem: T;
-      anchor: T;
-      prevIndex: PrevIndex;
-      currentIndex: CurrentIndex;
-      beforeOrderIndex: BeforeOrderIndex;
-      afterOrderIndex: AfterOrderIndex;
-      anchorIndex: CurrentIndex;
-    }) => void
-  ) {
-    this.ordered.forEach(
-      ([
-        beforeOrderIndex,
-        afterOrderIndex,
-        prevIndex,
-        currentIndex,
-        anchorIndex,
-      ]) =>
-        fn({
-          prevItem: this.prevList[prevIndex],
-          currentItem: this.list[currentIndex],
-          anchor: this.list[anchorIndex],
-          prevIndex,
-          currentIndex,
-          beforeOrderIndex,
-          afterOrderIndex,
-          anchorIndex,
-        })
-    );
+  public forEachOrdered(fn: (record: OrderedRecord<T>) => void) {
+    this.ordered.forEach((record) => fn(record));
   }
 
-  public forEachMaintained(
-    fn: (record: {
-      prevItem: T;
-      currentItem: T;
-      prevIndex: PrevIndex;
-      currentIndex: CurrentIndex;
-    }) => void
-  ) {
-    this.maintained.forEach(([prevIndex, currentIndex]) =>
-      fn({
-        prevItem: this.list[currentIndex],
-        currentItem: this.list[currentIndex],
-        prevIndex,
-        currentIndex,
-      })
-    );
+  public forEachMaintained(fn: (record: ChangedRecord<T>) => void) {
+    this.maintained.forEach((record) => fn(record));
   }
 
-  public forEachMaintainedRight(
-    fn: (record: {
-      prevItem: T;
-      currentItem: T;
-      prevIndex: PrevIndex;
-      currentIndex: CurrentIndex;
-    }) => void
-  ) {
+  public forEachMaintainedRight(fn: (record: ChangedRecord<T>) => void) {
     this.maintained.forEach((_, i) => {
-      const [prevIndex, currentIndex] =
-        this.maintained[this.maintained.length - 1 - i];
-      fn({
-        prevItem: this.list[currentIndex],
-        currentItem: this.list[currentIndex],
-        prevIndex,
-        currentIndex,
-      });
+      const record = this.maintained[this.maintained.length - 1 - i];
+      fn(record);
     });
   }
 }

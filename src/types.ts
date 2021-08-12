@@ -12,18 +12,30 @@ export interface ListFormat<T = any> {
   [index: number]: T;
   length: number;
 }
-export type PrevIndex = number;
-export type BeforeOrderIndex = number;
-export type AfterOrderIndex = number;
-export type CurrentIndex = number;
-export type Change = [PrevIndex, CurrentIndex];
-export type Order = [
-  BeforeOrderIndex, // from
-  AfterOrderIndex, // to
-  PrevIndex, // index in prevList, to reference item
-  CurrentIndex, // index in list, to reference item
-  CurrentIndex // anchor index in list, target to insert **before** anchor
-];
+export interface PrevRecord<T> {
+  prevItem: T;
+  prevIndex: number;
+}
+export interface CurrentRecord<T> {
+  currentItem: T;
+  currentIndex: number;
+}
+export interface ChangedRecord<T> {
+  prevItem: T;
+  currentItem: T;
+  prevIndex: number;
+  currentIndex: number;
+}
+export interface OrderedRecord<T> {
+  prevItem: T;
+  currentItem: T;
+  anchor: T | null;
+  prevIndex: number;
+  currentIndex: number;
+  beforeOrderIndex: number;
+  afterOrderIndex: number;
+  anchorIndex: number;
+}
 type EachMethod<T> = (fn: (record: T) => void) => void;
 /**
  * @typedef
@@ -39,34 +51,15 @@ type EachMethod<T> = (fn: (record: T) => void) => void;
 export interface DiffResult<T> {
   prevList: T[];
   list: T[];
-  added: CurrentIndex[];
-  removed: PrevIndex[];
-  changed: Change[];
-  ordered: Order[];
-  maintained: Change[];
-  forEachAdded: EachMethod<{ currentItem: T; currentIndex: CurrentIndex }>;
-  forEachAddedRight: EachMethod<{ currentItem: T; currentIndex: CurrentIndex }>;
-  forEachRemoved: EachMethod<{ prevItem: T; prevIndex: PrevIndex }>;
-  forEachChanged: EachMethod<{
-    prevItem: T;
-    currentItem: T;
-    prevIndex: PrevIndex;
-    currentIndex: CurrentIndex;
-  }>;
-  forEachOrdered: EachMethod<{
-    prevItem: T;
-    currentItem: T;
-    anchor: T;
-    prevIndex: PrevIndex;
-    currentIndex: CurrentIndex;
-    beforeOrderIndex: BeforeOrderIndex;
-    afterOrderIndex: AfterOrderIndex;
-    anchorIndex: CurrentIndex;
-  }>;
-  forEachMaintained: EachMethod<{
-    prevItem: T;
-    currentItem: T;
-    prevIndex: PrevIndex;
-    currentIndex: CurrentIndex;
-  }>;
+  added: CurrentRecord<T>[];
+  removed: PrevRecord<T>[];
+  changed: ChangedRecord<T>[];
+  ordered: OrderedRecord<T>[];
+  maintained: ChangedRecord<T>[];
+  forEachAdded: EachMethod<CurrentRecord<T>>;
+  forEachAddedRight: EachMethod<CurrentRecord<T>>;
+  forEachRemoved: EachMethod<PrevRecord<T>>;
+  forEachChanged: EachMethod<ChangedRecord<T>>;
+  forEachOrdered: EachMethod<OrderedRecord<T>>;
+  forEachMaintained: EachMethod<ChangedRecord<T>>;
 }
