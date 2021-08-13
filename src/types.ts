@@ -20,7 +20,7 @@ export interface CurrentRecord<T> {
   currentItem: T;
   currentIndex: number;
 }
-export interface ChangedRecord<T> {
+export interface MaintainedRecord<T> {
   prevItem: T;
   currentItem: T;
   prevIndex: number;
@@ -53,13 +53,13 @@ export interface DiffResult<T> {
   list: T[];
   added: CurrentRecord<T>[];
   removed: PrevRecord<T>[];
-  changed: ChangedRecord<T>[];
+  changed: MaintainedRecord<T>[];
   ordered: OrderedRecord<T>[];
-  maintained: ChangedRecord<T>[];
+  maintained: MaintainedRecord<T>[];
   forEachAdded: EachMethod<CurrentRecord<T>>;
   forEachAddedRight: EachMethod<CurrentRecord<T>>;
   forEachRemoved: EachMethod<PrevRecord<T>>;
-  forEachChanged: EachMethod<ChangedRecord<T>>;
+  forEachChanged: EachMethod<MaintainedRecord<T>>;
   forEachOrdered: EachMethod<OrderedRecord<T>>;
-  forEachMaintained: EachMethod<ChangedRecord<T>>;
+  forEachMaintained: EachMethod<MaintainedRecord<T>>;
 }

@@ -4,7 +4,7 @@ Copyright (c) 2019-present NAVER Corp.
 MIT license
 */
 import {
-  ChangedRecord,
+  MaintainedRecord,
   CurrentRecord,
   OrderedRecord,
   PrevRecord,
@@ -55,7 +55,7 @@ function LIS(arr: number[]) {
   return res.reverse();
 }
 
-function orderChanged<T>(priorityList: number[], maintained: ChangedRecord<T>[]) {
+function orderChanged<T>(priorityList: number[], maintained: MaintainedRecord<T>[]) {
   const confirmed: Record<number, boolean> = {};
   const ordered: OrderedRecord<T>[] = [];
   const length = priorityList.length;
@@ -105,8 +105,8 @@ export default class Result<T = any> {
   public list: T[];
   public added: CurrentRecord<T>[];
   public removed: PrevRecord<T>[];
-  public changed: ChangedRecord<T>[];
-  public maintained: ChangedRecord<T>[];
+  public changed: MaintainedRecord<T>[];
+  public maintained: MaintainedRecord<T>[];
 
   private orderPriority: number[];
   private cacheOrdered: OrderedRecord<T>[];
@@ -116,8 +116,8 @@ export default class Result<T = any> {
     list: T[],
     added: CurrentRecord<T>[],
     removed: PrevRecord<T>[],
-    changed: ChangedRecord<T>[],
-    maintained: ChangedRecord<T>[],
+    changed: MaintainedRecord<T>[],
+    maintained: MaintainedRecord<T>[],
     orderPriority: number[]
   ) {
     this.prevList = prevList;
@@ -157,7 +157,7 @@ export default class Result<T = any> {
     this.removed.forEach((record) => fn(record));
   }
 
-  public forEachChanged(fn: (record: ChangedRecord<T>) => void) {
+  public forEachChanged(fn: (record: MaintainedRecord<T>) => void) {
     this.changed.forEach((record) => fn(record));
   }
 
@@ -165,11 +165,11 @@ export default class Result<T = any> {
     this.ordered.forEach((record) => fn(record));
   }
 
-  public forEachMaintained(fn: (record: ChangedRecord<T>) => void) {
+  public forEachMaintained(fn: (record: MaintainedRecord<T>) => void) {
     this.maintained.forEach((record) => fn(record));
   }
 
-  public forEachMaintainedRight(fn: (record: ChangedRecord<T>) => void) {
+  public forEachMaintainedRight(fn: (record: MaintainedRecord<T>) => void) {
     const maintained = this.maintained;
     maintained.forEach((_, i) => {
       const record = maintained[maintained.length - 1 - i];

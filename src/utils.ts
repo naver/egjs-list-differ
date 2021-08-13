@@ -8,7 +8,7 @@ import HashMap from "./HashMap";
 import PolyMap from "./PolyMap";
 import Result from "./Result";
 import {
-  ChangedRecord,
+  MaintainedRecord,
   CurrentRecord,
   DiffResult,
   MapInterface,
@@ -63,8 +63,8 @@ export function diff<T>(
   const callback = findKeyCallback || ((e: T) => e);
   const added: CurrentRecord<T>[] = [];
   const removed: PrevRecord<T>[] = [];
-  const maintained: ChangedRecord<T>[] = [];
-  const changed: ChangedRecord<T>[] = [];
+  const maintained: MaintainedRecord<T>[] = [];
+  const changed: MaintainedRecord<T>[] = [];
   const prevKeys = prevList.map(callback);
   const keys = list.map(callback);
   const prevKeyMap: MapInterface<unknown, number> = new mapClass();
