@@ -146,8 +146,9 @@ export default class Result<T = any> {
   }
 
   public forEachAddedRight(fn: (record: CurrentRecord<T>) => void) {
-    this.added.forEach((_, i) => {
-      const record = this.added[this.added.length - 1 - i];
+    const added = this.added;
+    added.forEach((_, i) => {
+      const record = added[added.length - 1 - i];
       fn(record);
     });
   }
@@ -169,8 +170,9 @@ export default class Result<T = any> {
   }
 
   public forEachMaintainedRight(fn: (record: ChangedRecord<T>) => void) {
-    this.maintained.forEach((_, i) => {
-      const record = this.maintained[this.maintained.length - 1 - i];
+    const maintained = this.maintained;
+    maintained.forEach((_, i) => {
+      const record = maintained[maintained.length - 1 - i];
       fn(record);
     });
   }
