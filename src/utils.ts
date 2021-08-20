@@ -3,11 +3,17 @@ egjs-list-differ
 Copyright (c) 2019-present NAVER Corp.
 MIT license
 */
-import { MapInteface, DiffResult } from "./types";
-import PolyMap from "./PolyMap";
-import HashMap from "./HashMap";
 import { SUPPORT_MAP } from "./consts";
+import HashMap from "./HashMap";
+import PolyMap from "./PolyMap";
 import Result from "./Result";
+import {
+  MaintainedRecord,
+  CurrentRecord,
+  DiffResult,
+  MapInterface,
+  PrevRecord,
+} from "./types";
 
 /**
  *
@@ -37,9 +43,6 @@ import Result from "./Result";
  * // An array of index pairs of `prevList` and `list` with different indexes from `prevList` and `list`
  * // [[0, 2], [4, 3], [3, 4], [2, 6], [1, 7]]
  * console.log(result.changed);
- * // The subset of `changed` and an array of index pairs that moved data directly. Indicate an array of absolute index pairs of `ordered`.(Formatted by: Array<[index of prevList, index of list]>)
- * // [[4, 3], [3, 4], [2, 6]]
- * console.log(result.pureChanged);
  * // An array of index pairs to be `ordered` that can synchronize `list` before adding data. (Formatted by: Array<[prevIndex, nextIndex]>)
  * // [[4, 1], [4, 2], [4, 3]]
  * console.log(result.ordered);
@@ -50,64 +53,81 @@ import Result from "./Result";
 export function diff<T>(
   prevList: T[],
   list: T[],
-  findKeyCallback?: (e: T, i: number, arr: T[]) => any
+  findKeyCallback?: (e: T, i: number, arr: T[]) => unknown
 ): DiffResult<T> {
-  const mapClass: new () => MapInteface<any, number> = SUPPORT_MAP ? Map : (findKeyCallback ? HashMap : PolyMap);
+  const mapClass: new () => MapInterface<unknown, number> = SUPPORT_MAP
+    ? Map
+    : findKeyCallback
+    ? HashMap
+    : PolyMap;
   const callback = findKeyCallback || ((e: T) => e);
-  const added: number[] = [];
-  const removed: number[] = [];
-  const maintained: number[][] = [];
+  const added: CurrentRecord<T>[] = [];
+  const removed: PrevRecord<T>[] = [];
+  const maintained: MaintainedRecord<T>[] = [];
+  const changed: MaintainedRecord<T>[] = [];
   const prevKeys = prevList.map(callback);
   const keys = list.map(callback);
-  const prevKeyMap: MapInteface<any, number> = new mapClass();
-  const keyMap: MapInteface<any, number> = new mapClass();
-  const changedBeforeAdded: number[][] = [];
-  const fixed: boolean[] = [];
-  const removedMap: object = {};
-  let changed: number[][] = [];
+  const prevKeyMap: MapInterface<unknown, number> = new mapClass();
+  const keyMap: MapInterface<unknown, number> = new mapClass();
+  const removedMap: Record<number, number> = {};
+  const orderPriority: number[] = [];
   let addedCount = 0;
   let removedCount = 0;
 
   // Add prevKeys and keys to the hashmap.
-  prevKeys.forEach((key, prevListIndex) => {
-    prevKeyMap.set(key, prevListIndex);
+  prevKeys.forEach((key, prevIndex) => {
+    prevKeyMap.set(key, prevIndex);
   });
   keys.forEach((key, listIndex) => {
     keyMap.set(key, listIndex);
   });
 
   // Compare `prevKeys` and `keys` and add them to `removed` if they are not in `keys`.
-  prevKeys.forEach((key, prevListIndex) => {
+  prevKeys.forEach((key, prevIndex) => {
     const listIndex = keyMap.get(key);
 
     // In prevList, but not in list, it is removed.
     if (typeof listIndex === "undefined") {
       ++removedCount;
-      removed.push(prevListIndex);
+      removed.push({
+        prevItem: prevList[prevIndex],
+        prevIndex,
+      });
     } else {
       removedMap[listIndex] = removedCount;
     }
   });
 
   // Compare `prevKeys` and `keys` and add them to `added` if they are not in `prevKeys`.
-  keys.forEach((key, listIndex) => {
-    const prevListIndex = prevKeyMap.get(key);
+  keys.forEach((key, currentIndex) => {
+    const prevIndex = prevKeyMap.get(key);
+    const currentItem = list[currentIndex];
 
     // In list, but not in prevList, it is added.
-    if (typeof prevListIndex === "undefined") {
-      added.push(listIndex);
+    if (typeof prevIndex === "undefined") {
+      added.push({
+        currentItem,
+        currentIndex,
+      });
       ++addedCount;
     } else {
-      maintained.push([prevListIndex, listIndex]);
-      removedCount = removedMap[listIndex] || 0;
+      const prevItem = prevList[prevIndex];
+      maintained.push({
+        prevItem,
+        currentItem,
+        prevIndex,
+        currentIndex,
+      });
+      removedCount = removedMap[currentIndex] || 0;
 
-      changedBeforeAdded.push([
-        prevListIndex - removedCount,
-        listIndex - addedCount,
-      ]);
-      fixed.push(listIndex === prevListIndex);
-      if (prevListIndex !== listIndex) {
-        changed.push([prevListIndex, listIndex]);
+      orderPriority[prevIndex - removedCount] = currentIndex - addedCount;
+      if (prevIndex !== currentIndex) {
+        changed.push({
+          prevItem,
+          currentItem,
+          prevIndex,
+          currentIndex,
+        });
       }
     }
   });
@@ -121,7 +141,6 @@ export function diff<T>(
     removed,
     changed,
     maintained,
-    changedBeforeAdded,
-    fixed,
+    orderPriority
   );
 }
